@@ -21,7 +21,7 @@ def device_new(request):
             return redirect('device_detail', pk=device.pk)
     else:
         form = DeviceForm()
-    return render(request, 'repairs/device_edit.html', {'form': form})
+    return render(request, 'repairs/device_new.html', {'form': form})
 
 def device_edit(request, pk):
     device = get_object_or_404(Device, pk=pk)

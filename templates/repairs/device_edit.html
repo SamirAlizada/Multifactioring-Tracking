@@ -2,11 +2,42 @@
 
 {% block content %}
 
-<h1>Edit Device</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
+<div class="container my-4">
+    <h1 class="display-4">Edit Device</h1>
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_device_name">Device Name</label>
+            {{ form.device_name }}
+        </div>
+        <div class="form-group">
+            <label for="id_customer_name">Costumer name</label>
+            {{ form.customer_name }}
+        </div>
+        <div class="form-group">
+            <label for="id_repair_cost">Cost</label>
+            {{ form.repair_cost }}
+        </div>
+        <div class="form-group">
+            <label for="id_repair_duration">Repair Duration</label>
+            {{ form.repair_duration }}
+        </div>
+        <div class="form-group">
+            <label for="id_delivery_date">Delivery Date</label>
+            {{ form.delivery_date }}
+        </div>
+        <div class="form-group">
+            <label for="id_status">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="form-group">
+            <label for="id_notes">Note</label>
+            {{ form.notes }}
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
+    <a class="btn btn-secondary mt-3" href="{% url 'device_list' %}">Back to list</a>
+</div>
 
+<br><br>
 {% endblock content %}

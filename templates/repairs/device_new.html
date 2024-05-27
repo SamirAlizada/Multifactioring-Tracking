@@ -1,0 +1,91 @@
+{% include "index.html" %}
+
+{% block content %}
+<style>
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+</style>
+
+{% if messages %}
+<div class="alert alert-success" role="alert">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+<br>
+<form method="post">
+    <h2>Add Device</h2>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="id_product_name">Device Name:</label>
+        {{ form.device_name }}
+    </div>
+    <div class="form-group">
+        <label for="id_date">Costumer Name:</label>
+        {{ form.customer_name }}
+    </div>
+    <div class="form-group">
+        <label for="id_price">Cost:</label>
+        {{ form.repair_cost }}
+    </div>
+    <div class="form-group">
+        <label for="id_stock_number">Repair Duration:</label>
+        {{ form.repair_duration }}
+    </div>
+    <div class="form-group">
+        <label for="id_stock_number">Delivery Date:</label>
+        {{ form.delivery_date }}
+    </div>
+    <div class="form-group">
+        <label for="id_stock_number">Status:</label>
+        {{ form.status }}
+    </div>
+    <div class="form-group">
+        <label for="id_stock_number">Notes:</label>
+        {{ form.notes }}
+    </div>
+    <button type="submit">Add</button>
+</form>
+
+<br><br>
+{% endblock content %}
