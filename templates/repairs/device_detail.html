@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<h1>{{ device.device_name }} - {{ device.customer_name }}</h1>
+<p>Cost: {{ device.repair_cost }}</p>
+<p>Duration: {{ device.repair_duration }} days</p>
+<p>Delivery Date: {{ device.delivery_date }}</p>
+<p>Status: {{ device.status }}</p>
+<p>Notes: {{ device.notes }}</p>
+<a href="{% url 'device_edit' device.pk %}">Edit</a>
+<a href="{% url 'device_list' %}">Back to list</a>
+
+{% endblock content %}
