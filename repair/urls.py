@@ -6,6 +6,7 @@ urlpatterns = [
     path('device/<int:pk>/', device_detail, name='device_detail'),
     path('device/new/', device_new, name='device_new'),
     path('device/<int:pk>/edit/', device_edit, name='device_edit'),
+    path('delete-device/<int:pk>/', delete_device, name='delete_device'),
 
     # Account
     path('login/', user_login, name='login'),

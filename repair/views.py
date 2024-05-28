@@ -94,6 +94,12 @@ def device_edit(request, pk):
         form = DeviceForm(instance=device)
     return render(request, 'repairs/device_edit.html', {'form': form})
 
+# Delete
+def delete_device(request, pk):
+    device = Device.objects.get(pk=pk)
+    device.delete()
+    return redirect('device_list')
+
 # User
 def user_login(request):
     if request.method == 'POST':
