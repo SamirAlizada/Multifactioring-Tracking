@@ -5,7 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime, date, timedelta
 import logging
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def device_list(request):
     today = date.today()
     
@@ -68,11 +70,12 @@ def device_list(request):
         'devices_near_end_date': devices_near_end_date,
     })
 
+@login_required
 def device_detail(request, pk):
     device = get_object_or_404(Device, pk=pk)
     return render(request, 'repairs/device_detail.html', {'device': device})
 
-
+@login_required
 def searched_device(request):
     query = request.GET.get('q')
     devices = Device.objects.none()  # Empty queryset initially
@@ -82,6 +85,7 @@ def searched_device(request):
 
     return render(request, 'repairs/searched_device.html', {'devices': devices})
 
+@login_required
 def device_new(request):
     if request.method == "POST":
         form = DeviceForm(request.POST)
@@ -93,6 +97,7 @@ def device_new(request):
         form = DeviceForm()
     return render(request, 'repairs/device_new.html', {'form': form})
 
+@login_required
 def device_edit(request, pk):
     device = get_object_or_404(Device, pk=pk)
     if request.method == "POST":
@@ -105,6 +110,7 @@ def device_edit(request, pk):
     return render(request, 'repairs/device_edit.html', {'form': form})
 
 # Delete
+@login_required
 def delete_device(request, pk):
     device = Device.objects.get(pk=pk)
     device.delete()

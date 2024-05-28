@@ -29,6 +29,7 @@
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            {% if user.is_authenticated %}
             <a href="{% url 'device_list' %}"><img src="https://i.pinimg.com/736x/e6/27/cb/e627cb297828563c38dd498e56a0da0a.jpg" alt="" style="height: 40px; width: 40px;"></a>
             <a class="nav-link" style="color: white;" href="{% url 'device_new' %}">New Device</a>
             <a class="nav-link" style="color: white;" href="{% url 'searched_device' %}">Searched Device</a>
@@ -46,7 +47,7 @@
                     <li class="nav-item">
                     </li>
                 </ul>
-                {% if user.is_authenticated %}
+                
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" style="color: aliceblue;" href="#"
