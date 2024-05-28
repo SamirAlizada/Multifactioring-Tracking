@@ -1,63 +1,51 @@
-{% include "index.html" %}
+{% extends "index.html" %}
 
 {% block content %}
-
-<style>
-    /* static/css/styles.css */
-
-    body {
-        background-color: #f8f9fa;
-    }
-
-    .container {
-        margin-top: 50px;
-    }
-
-    h1.display-4 {
-        margin-bottom: 30px;
-    }
-
-    .list-group-item {
-        border: none;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 15px;
-    }
-
-    .list-group-item:hover {
-        background-color: #f1f1f1;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border: none;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
-    }
-
-    .badge-info {
-        background-color: #17a2b8;
-    }
-</style>
-
-<div class="my-4">
+<div class="container my-4">
     <h1 class="display-4">Device List</h1>
-    <ul class="list-group">
-        {% for device in devices %}
-        <a href="{% url 'device_detail' device.pk %}">
+    
+    <div class="my-3">
+        <form method="get" action="">
+            <input type="text" name="q" class="form-control" placeholder="Search devices">
+        </form>
+    </div>
+    
+    {% for month, data in grouped_devices.items %}
+    <div class="card my-3">
+        <div class="card-header">
+            <h2>{{ month }}</h2>
+            <p>Total Repair Cost: ${{ data.total_repair_cost }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for device in data.devices %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div>
-                    <h5>{{ device.device_name }} - {{ device.customer_name }} - {{ device.delivery_date|date:"d/m/Y" }}
-                    </h5>
+                    <h5><a href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
+                    <p class="mb-0">Customer: {{ device.customer_name }}</p>
                     <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
                 </div>
                 <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
             </li>
-        </a>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+
+    <!-- <h2 class="my-4">Devices Near End Date</h2>
+    <ul class="list-group">
+        {% for device in devices_near_end_date %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <h5><a href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
+                <p class="mb-0">Customer: {{ device.customer_name }}</p>
+                <p class="mb-0">Delivery Date: {{ device.delivery_date }}</p>
+                <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
+            </div>
+            <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
+        </li>
         {% endfor %}
-    </ul>
+    </ul> -->
 </div>
 
+<br><br>
 {% endblock content %}
