@@ -75,7 +75,6 @@ def device_detail(request, pk):
     device = get_object_or_404(Device, pk=pk)
     return render(request, 'repairs/device_detail.html', {'device': device})
 
-@login_required
 def searched_device(request):
     query = request.GET.get('q')
     devices = Device.objects.none()  # Empty queryset initially
@@ -132,3 +131,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('device_list')
+
+def custom_404(request, exception):
+    return render(request, '404.html', status=404)
