@@ -4,7 +4,7 @@ from .forms import DeviceForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime, date, timedelta
-
+import logging
 
 def device_list(request):
     today = date.today()
@@ -68,18 +68,19 @@ def device_list(request):
         'devices_near_end_date': devices_near_end_date,
     })
 
-def device_detail(request):
-    query = request.GET.get('q')
+def device_detail(request, pk):
+    device = get_object_or_404(Device, pk=pk)
+    return render(request, 'repairs/device_detail.html', {'device': device})
 
-    devices = Device.objects.all()
-    if query:
-        devices = devices.filter(device_name__icontains=query)
-        
-    return render(request, 'repairs/device_detail.html', {'devices': devices})
 
 def searched_device(request):
-    device = get_object_or_404(Device)
-    return render(request, 'repairs/searched_device.html', {'device': device})
+    query = request.GET.get('q')
+    devices = Device.objects.none()  # Empty queryset initially
+
+    if query:
+        devices = Device.objects.filter(series_id__icontains=query)
+
+    return render(request, 'repairs/searched_device.html', {'devices': devices})
 
 def device_new(request):
     if request.method == "POST":
