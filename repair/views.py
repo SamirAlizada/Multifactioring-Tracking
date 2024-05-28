@@ -68,9 +68,18 @@ def device_list(request):
         'devices_near_end_date': devices_near_end_date,
     })
 
-def device_detail(request, pk):
-    device = get_object_or_404(Device, pk=pk)
-    return render(request, 'repairs/device_detail.html', {'device': device})
+def device_detail(request):
+    query = request.GET.get('q')
+
+    devices = Device.objects.all()
+    if query:
+        devices = devices.filter(device_name__icontains=query)
+        
+    return render(request, 'repairs/device_detail.html', {'devices': devices})
+
+def searched_device(request):
+    device = get_object_or_404(Device)
+    return render(request, 'repairs/searched_device.html', {'device': device})
 
 def device_new(request):
     if request.method == "POST":

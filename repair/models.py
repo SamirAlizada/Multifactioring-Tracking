@@ -10,6 +10,7 @@ class Device(models.Model):
         ('Delivered', 'Delivered')
     ]
 
+    series_id = models.IntegerField(default=1)
     device_name = models.CharField(max_length=100)
     customer_name = models.CharField(max_length=100)
     repair_cost = models.DecimalField(max_digits=10, decimal_places=2)

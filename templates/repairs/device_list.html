@@ -29,10 +29,12 @@
                         </span>
                     </p>
                 </div>
+                {% if user.is_authenticated %}
                 <div class="text-right">
                     <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
                     <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Are you sure delete this device?')">Delete</a>
                 </div>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
