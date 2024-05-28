@@ -23,7 +23,7 @@
 }
 
 </style>
-
+<div class="container my-4">
 <div class="card mt-4">
     <div class="card-header">
         <h1 class="card-title">{{ device.device_name }} - {{ device.customer_name }}</h1>
@@ -38,4 +38,6 @@
         <a href="{% url 'device_list' %}" class="btn btn-secondary">Back to list</a>
     </div>
 </div>
+</div>
+
 {% endblock content %}

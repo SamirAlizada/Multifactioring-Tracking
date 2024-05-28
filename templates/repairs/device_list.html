@@ -22,7 +22,12 @@
                 <div>
                     <h5><a href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
                     <p class="mb-0">Customer: {{ device.customer_name }}</p>
-                    <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
+                    <p class="mb-0">Status: 
+                        <span class="badge 
+                            {% if device.status == 'Received' %}badge-info{% elif device.status == 'In Progress' %}badge-warning{% elif device.status == 'Completed' %}badge-success{% elif device.status == 'Delivered' %}badge-secondary{% endif %}">
+                            {{ device.status }}
+                        </span>
+                    </p>
                 </div>
                 <div class="text-right">
                     <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
