@@ -1,59 +1,61 @@
-{% extends "index.html" %}
+{% include "index.html" %}
 
 {% block content %}
 
 <style>
     /* static/css/styles.css */
 
-body {
-    background-color: #f8f9fa;
-}
+    body {
+        background-color: #f8f9fa;
+    }
 
-.container {
-    margin-top: 50px;
-}
+    .container {
+        margin-top: 50px;
+    }
 
-h1.display-4 {
-    margin-bottom: 30px;
-}
+    h1.display-4 {
+        margin-bottom: 30px;
+    }
 
-.list-group-item {
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-}
+    .list-group-item {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+    }
 
-.list-group-item:hover {
-    background-color: #f1f1f1;
-}
+    .list-group-item:hover {
+        background-color: #f1f1f1;
+    }
 
-.btn-secondary {
-    background-color: #6c757d;
-    border: none;
-}
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
 
-.btn-secondary:hover {
-    background-color: #5a6268;
-}
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
 
-.badge-info {
-    background-color: #17a2b8;
-}
-
+    .badge-info {
+        background-color: #17a2b8;
+    }
 </style>
 
 <div class="my-4">
     <h1 class="display-4">Device List</h1>
     <ul class="list-group">
         {% for device in devices %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-                <h5><a href="{% url 'device_detail' device.pk %}">{{ device.device_name }} - {{ device.customer_name }}</a></h5>
-                <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
-            </div>
-            <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
-        </li>
+        <a href="{% url 'device_detail' device.pk %}">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <h5>{{ device.device_name }} - {{ device.customer_name }} - {{ device.delivery_date|date:"d/m/Y" }}
+                    </h5>
+                    <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
+                </div>
+                <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
+            </li>
+        </a>
         {% endfor %}
     </ul>
 </div>
