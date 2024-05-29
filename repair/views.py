@@ -29,7 +29,7 @@ def add_product(request):
             return redirect('add_product') 
     else:
         form = ProductForm()
-    return render(request, 'add_product.html', {'form': form})
+    return render(request, 'product/add_product.html', {'form': form})
 
 def add_product_sold(request):
     if request.method == 'POST':
@@ -40,7 +40,7 @@ def add_product_sold(request):
             return redirect('add_product_sold')
     else:
         form = ProductSoldForm()
-    return render(request, 'add_product_sold.html', {'form': form})
+    return render(request, 'productSold/add_product_sold.html', {'form': form})
 #------------------------------------------------------------------------------
 
 #Lists
