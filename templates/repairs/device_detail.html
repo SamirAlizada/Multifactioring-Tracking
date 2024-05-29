@@ -4,41 +4,85 @@
 
 <style>
     .card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        background-color: #f8f9fa;
+        margin: 0 auto;
+        max-width: 450px;  /* Maksimum genişlik belirlendi */
+        width: auto;      /* İçeriğe göre genişlik ayarlanacak */
+    }
 
-.card-title {
-    font-size: 1.5rem;
-    color: #333;
-}
+    .card-title {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 0;
+    }
 
-.card-body p {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-}
+    .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e3e6f0;
+        padding: 1rem 1.5rem;
+    }
 
-.btn-primary {
-    margin-right: 0.5rem;
-}
+    .card-body {
+        padding: 1.5rem;
+    }
 
+    .card-body p {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn-primary {
+        margin-right: 0.5rem;
+    }
+
+    .btn-secondary {
+        margin-right: 0.5rem;
+    }
+
+    .details-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .details-container p strong {
+        width: 50%;
+    }
+
+    .btn-full-width {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+    
 </style>
-<div class="container my-5" style="width: 600px;">
-<div class="card mt-4">
-    <div class="card-header">
-        <h1 class="card-title text-center">{{ device.device_name }} - {{ device.customer_name }}</h1>
+<div class="container my-5">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h1 class="card-title">
+                <div class="row">
+                    <a href="{% url 'device_list' %}" class="btn btn-secondary text-left">Back</a>
+                    &nbsp;&nbsp;
+                    {{ device.device_name }} - {{ device.customer_name }}
+                </div>
+            </h1>
+        </div>
+        <div class="card-body">
+            <div class="details-container">
+                <p><strong>Series Id:</strong> <span>{{ device.series_id }}</span></p>
+                <p><strong>Cost:</strong> <span>{{ device.repair_cost }} $</span></p>
+                <p><strong>Duration:</strong> <span>{{ device.repair_duration }} days</span></p>
+                <p><strong>Delivery Date:</strong> <span>{{ device.delivery_date|date:"d/m/Y" }}</span></p>
+                <p><strong>Status:</strong> <span>{{ device.status }}</span></p>
+                <p><strong>Notes:</strong> <span>{{ device.notes }}</span></p>
+            </div>
+            <a href="{% url 'device_edit' device.pk %}" class="btn btn-primary btn-full-width">Edit</a>
+        </div>
     </div>
-    <div class="card-body">
-        <p><strong>Series Id:</strong> {{ device.series_id }}</p>
-        <p><strong>Cost:</strong> {{ device.repair_cost }} $</p>
-        <p><strong>Duration:</strong> {{ device.repair_duration }} days</p>
-        <p><strong>Delivery Date:</strong> {{ device.delivery_date|date:"d/m/Y" }}</p>
-        <p><strong>Status:</strong> {{ device.status }}</p>
-        <p><strong>Notes:</strong> {{ device.notes }}</p>
-        <a href="{% url 'device_edit' device.pk %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'device_list' %}" class="btn btn-secondary">Back to list</a>
-    </div>
-</div>
 </div>
 
 {% endblock content %}
