@@ -112,7 +112,7 @@ def product_list(request):
 
     query = request.GET.get('q')
     if query:
-        bars = bars.filter(product_name__icontains=query)
+        products = products.filter(product_name__icontains=query)
 
     return render(request, 'product_list.html', {'products': products})
 
@@ -234,7 +234,7 @@ def product_panel(request):
 
     query = request.GET.get('q')
     if query:
-        bars = bars.filter(product_name__icontains=query)
+        products = products.filter(product_name__icontains=query)
 
     return render(request, 'product_panel.html', {'products': products})
 
