@@ -80,7 +80,7 @@ def searched_device(request):
     devices = Device.objects.none()  # Empty queryset initially
 
     if query:
-        devices = Device.objects.filter(series_id__icontains=query)
+        devices = Device.objects.filter(series_id=query)
 
     return render(request, 'repairs/searched_device.html', {'devices': devices})
 
