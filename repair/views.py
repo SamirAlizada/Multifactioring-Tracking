@@ -114,7 +114,7 @@ def product_list(request):
     if query:
         products = products.filter(product_name__icontains=query)
 
-    return render(request, 'product_list.html', {'products': products})
+    return render(request, 'product/product_list.html', {'products': products})
 
 def product_sold_list(request):
     today = date.today()
@@ -169,7 +169,7 @@ def product_sold_list(request):
     }
 
     # Pass the `grouped_product_solds` data to the `product_sold_list.html` template
-    return render(request, 'product_sold_list.html', {
+    return render(request, 'productSold/product_sold_list.html', {
         'grouped_product_solds': sorted_grouped_product_solds_dict,
         'today': today,
     })
@@ -196,7 +196,7 @@ def update_product(request, pk):
         if form.is_valid():
             form.save()
             return redirect('product_panel')
-    return render(request, 'update_product.html', {'form': form})
+    return render(request, 'product/update_product.html', {'form': form})
 
 def update_product_sold(request, pk):
     product_sold = get_object_or_404(ProductSold, pk=pk)
@@ -206,7 +206,7 @@ def update_product_sold(request, pk):
         if form.is_valid():
             form.save()
             return redirect('product_sold_panel')
-    return render(request, 'update_product_sold.html', {'form': form})
+    return render(request, 'productSold/update_product_sold.html', {'form': form})
 #----------------------------------------------------------------------
 
 #Delete
@@ -220,13 +220,13 @@ def delete_product(request, pk):
     product = Product.objects.get(pk=pk)
     product.delete()
     messages.success(request, 'Product deleted successfully!')
-    return redirect('product_panel')
+    return redirect('product/product_panel')
 
 def delete_product_sold(request, pk):
     product_sold = ProductSold.objects.get(pk=pk)
     product_sold.delete()
     messages.success(request, 'Product deleted successfully!')
-    return redirect('product_sold_panel')
+    return redirect('productSold/product_sold_panel')
 
 #Panels
 def product_panel(request):
@@ -236,7 +236,7 @@ def product_panel(request):
     if query:
         products = products.filter(product_name__icontains=query)
 
-    return render(request, 'product_panel.html', {'products': products})
+    return render(request, 'product/product_panel.html', {'products': products})
 
 def product_sold_panel(request):
     today = date.today()
@@ -291,7 +291,7 @@ def product_sold_panel(request):
     }
 
     # Pass the `grouped_product_solds` data to the `product_sold_list.html` template
-    return render(request, 'product_sold_panel.html', {
+    return render(request, 'productSold/product_sold_panel.html', {
         'grouped_product_solds': sorted_grouped_product_solds_dict,
         'today': today,
     })
