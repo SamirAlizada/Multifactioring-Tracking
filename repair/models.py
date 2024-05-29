@@ -42,3 +42,20 @@ class Device(models.Model):
 
     def __str__(self):
         return f"{self.device_name} - {self.customer_name}"
+
+class Product(models.Model):
+    product_name = models.CharField(max_length=100)
+    price = models.FloatField()
+    stock_number = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.product_name}"
+    
+class ProductSold(models.Model):
+    product_name = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateField(default=timezone.now)
+    price = models.FloatField()
+    count = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.product_name}"

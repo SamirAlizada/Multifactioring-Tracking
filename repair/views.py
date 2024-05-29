@@ -1,12 +1,49 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Device
-from .forms import DeviceForm
+from .models import Device, Product, ProductSold
+from .forms import DeviceForm, ProductForm, ProductSoldForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime, date, timedelta
 import logging
 from django.contrib.auth.decorators import login_required
 
+#Add
+@login_required
+def add_device(request):
+    if request.method == "POST":
+        form = DeviceForm(request.POST)
+        if form.is_valid():
+            device = form.save()
+            # return redirect('device_detail', pk=device.pk)
+            return redirect('device_list')
+    else:
+        form = DeviceForm()
+    return render(request, 'repairs/add_device.html', {'form': form})
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product added successfully!')
+            return redirect('add_product') 
+    else:
+        form = ProductForm()
+    return render(request, 'add_product.html', {'form': form})
+
+def add_product_sold(request):
+    if request.method == 'POST':
+        form = ProductSoldForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product sold added successfully!')
+            return redirect('add_product_sold')
+    else:
+        form = ProductSoldForm()
+    return render(request, 'add_product_sold.html', {'form': form})
+#------------------------------------------------------------------------------
+
+#Lists
 @login_required
 def device_list(request):
     today = date.today()
@@ -70,34 +107,77 @@ def device_list(request):
         'devices_near_end_date': devices_near_end_date,
     })
 
-@login_required
-def device_detail(request, pk):
-    device = get_object_or_404(Device, pk=pk)
-    return render(request, 'repairs/device_detail.html', {'device': device})
+def product_list(request):
+    products = Product.objects.all()
 
-def searched_device(request):
     query = request.GET.get('q')
-    devices = Device.objects.none()  # Empty queryset initially
-
     if query:
-        devices = Device.objects.filter(series_id=query)
+        bars = bars.filter(product_name__icontains=query)
 
-    return render(request, 'repairs/searched_device.html', {'devices': devices})
+    return render(request, 'product_list.html', {'products': products})
 
+def product_sold_list(request):
+    today = date.today()
+
+    # Retrieve the search query
+    query = request.GET.get('q')
+
+    # Get all product_solds or filter based on the search query
+    product_solds = ProductSold.objects.all()
+    
+    if query:
+        product_solds = product_solds.filter(product_name__name__icontains=query)
+
+    # Create a dictionary for grouping product_solds by month
+    grouped_product_solds_dict = {}
+    for product_sold in product_solds:
+        # Extract month and year from `date`
+        month_key = product_sold.date.strftime('%Y-%m')
+        month_display = product_sold.date.strftime('%B %Y')
+
+        # Calculate the sale amount for the product_sold
+        sale_amount = product_sold.count * product_sold.price
+
+        # Group product_solds by year-month key
+        if month_key not in grouped_product_solds_dict:
+            grouped_product_solds_dict[month_key] = {
+                'display': month_display,
+                'product_solds': [],
+                'total_sales': 0  # Initialize total monthly sales
+            }
+
+        # Add the product_sold to the corresponding month's group
+        grouped_product_solds_dict[month_key]['product_solds'].append(product_sold)
+
+        # Add the product_sold's sale amount to the total sales for the month
+        grouped_product_solds_dict[month_key]['total_sales'] += sale_amount
+
+    # Convert the dictionary to a list of tuples for sorting
+    sorted_grouped_product_solds_list = sorted(
+        grouped_product_solds_dict.items(),
+        key=lambda x: x[0],
+        reverse=True
+    )
+
+    # Convert the sorted list back to a dictionary
+    sorted_grouped_product_solds_dict = {
+        item[1]['display']: {
+            'product_solds': item[1]['product_solds'],
+            'total_sales': item[1]['total_sales']
+        }
+        for item in sorted_grouped_product_solds_list
+    }
+
+    # Pass the `grouped_product_solds` data to the `product_sold_list.html` template
+    return render(request, 'product_sold_list.html', {
+        'grouped_product_solds': sorted_grouped_product_solds_dict,
+        'today': today,
+    })
+#------------------------------------------------------------------------------
+
+#Updates
 @login_required
-def device_new(request):
-    if request.method == "POST":
-        form = DeviceForm(request.POST)
-        if form.is_valid():
-            device = form.save()
-            # return redirect('device_detail', pk=device.pk)
-            return redirect('device_list')
-    else:
-        form = DeviceForm()
-    return render(request, 'repairs/device_new.html', {'form': form})
-
-@login_required
-def device_edit(request, pk):
+def update_device(request, pk):
     device = get_object_or_404(Device, pk=pk)
     if request.method == "POST":
         form = DeviceForm(request.POST, instance=device)
@@ -106,14 +186,166 @@ def device_edit(request, pk):
             return redirect('device_detail', pk=device.pk)
     else:
         form = DeviceForm(instance=device)
-    return render(request, 'repairs/device_edit.html', {'form': form})
+    return render(request, 'repairs/update_device.html', {'form': form})
 
-# Delete
+def update_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    form = ProductForm(instance=product)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_panel')
+    return render(request, 'update_product.html', {'form': form})
+
+def update_product_sold(request, pk):
+    product_sold = get_object_or_404(ProductSold, pk=pk)
+    form = ProductSoldForm(instance=product_sold)
+    if request.method == 'POST':
+        form = ProductSoldForm(request.POST, instance=product_sold)
+        if form.is_valid():
+            form.save()
+            return redirect('product_sold_panel')
+    return render(request, 'update_product_sold.html', {'form': form})
+#----------------------------------------------------------------------
+
+#Delete
 @login_required
 def delete_device(request, pk):
     device = Device.objects.get(pk=pk)
     device.delete()
     return redirect('device_list')
+
+def delete_product(request, pk):
+    product = Product.objects.get(pk=pk)
+    product.delete()
+    messages.success(request, 'Product deleted successfully!')
+    return redirect('product_panel')
+
+def delete_product_sold(request, pk):
+    product_sold = ProductSold.objects.get(pk=pk)
+    product_sold.delete()
+    messages.success(request, 'Product deleted successfully!')
+    return redirect('product_sold_panel')
+
+#Panels
+def product_panel(request):
+    products = Product.objects.all()
+
+    query = request.GET.get('q')
+    if query:
+        bars = bars.filter(product_name__icontains=query)
+
+    return render(request, 'product_panel.html', {'products': products})
+
+def product_sold_panel(request):
+    today = date.today()
+
+    # Retrieve the search query
+    query = request.GET.get('q')
+
+    # Get all product_solds or filter based on the search query
+    product_solds = ProductSold.objects.all()
+    
+    if query:
+        product_solds = product_solds.filter(product_name__name__icontains=query)
+
+    # Create a dictionary for grouping product_solds by month
+    grouped_product_solds_dict = {}
+    for product_sold in product_solds:
+        # Extract month and year from `date`
+        month_key = product_sold.date.strftime('%Y-%m')
+        month_display = product_sold.date.strftime('%B %Y')
+
+        # Calculate the sale amount for the product_sold
+        sale_amount = product_sold.count * product_sold.price
+
+        # Group product_solds by year-month key
+        if month_key not in grouped_product_solds_dict:
+            grouped_product_solds_dict[month_key] = {
+                'display': month_display,
+                'product_solds': [],
+                'total_sales': 0  # Initialize total monthly sales
+            }
+
+        # Add the product_sold to the corresponding month's group
+        grouped_product_solds_dict[month_key]['product_solds'].append(product_sold)
+
+        # Add the product_sold's sale amount to the total sales for the month
+        grouped_product_solds_dict[month_key]['total_sales'] += sale_amount
+
+    # Convert the dictionary to a list of tuples for sorting
+    sorted_grouped_product_solds_list = sorted(
+        grouped_product_solds_dict.items(),
+        key=lambda x: x[0],
+        reverse=True
+    )
+
+    # Convert the sorted list back to a dictionary
+    sorted_grouped_product_solds_dict = {
+        item[1]['display']: {
+            'product_solds': item[1]['product_solds'],
+            'total_sales': item[1]['total_sales']
+        }
+        for item in sorted_grouped_product_solds_list
+    }
+
+    # Pass the `grouped_product_solds` data to the `product_sold_list.html` template
+    return render(request, 'product_sold_panel.html', {
+        'grouped_product_solds': sorted_grouped_product_solds_dict,
+        'today': today,
+    })
+#------------------------------------------------------------------------------
+
+# Operations
+def increase_stock(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    product.stock_number += 1
+    product.save()
+    return redirect('product_panel')
+
+def decrease_stock(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    # to check before reducing stock_number
+    # you can add any stock control (for example, negative value prevention).
+    if product.stock_number > 0:
+        product.stock_number -= 1
+        product.save()
+    return redirect('product_panel')
+
+def increase_sold(request, pk):
+    product_sold = get_object_or_404(ProductSold, pk=pk)
+    product_sold.count += 1
+    product_sold.save()
+    return redirect('product_sold_panel')
+
+def decrease_sold(request, pk):
+    product_sold = get_object_or_404(ProductSold, pk=pk)
+    # to check before reducing count
+    # you can add any count control (for example, negative value prevention).
+    if product_sold.count > 0:
+        product_sold.count -= 1
+        product_sold.save()
+    return redirect('product_sold_panel')
+#-----------------------------------------------------------------------------
+
+#Details
+@login_required
+def device_detail(request, pk):
+    device = get_object_or_404(Device, pk=pk)
+    return render(request, 'repairs/device_detail.html', {'device': device})
+#-----------------------------------------------------------------------------
+
+#Seach the product by Series ID
+def searched_device(request):
+    query = request.GET.get('q')
+    devices = Device.objects.none()  # Empty queryset initially
+
+    if query:
+        devices = Device.objects.filter(series_id=query)
+
+    return render(request, 'repairs/searched_device.html', {'devices': devices})
+#-----------------------------------------------------------------------------
 
 # User
 def user_login(request):
@@ -131,6 +363,9 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('device_list')
+#-----------------------------------------------------------------------------
 
+#404
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
+#-----------------------------------------------------------------------------
