@@ -6,8 +6,8 @@ urlpatterns = [
     path('device/', device_list, name='device_list'),
     path('device/<int:pk>/', device_detail, name='device_detail'),
     path('', searched_device, name='searched_device'),
-    path('device/new/', device_new, name='device_new'),
-    path('device/<int:pk>/edit/', device_edit, name='device_edit'),
+    path('device/add/', add_device, name='add_device'),
+    path('device/<int:pk>/update/', update_device, name='update_device'),
     path('delete-device/<int:pk>/', delete_device, name='delete_device'),
 
     # Account

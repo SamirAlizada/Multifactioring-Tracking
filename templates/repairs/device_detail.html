@@ -76,7 +76,7 @@
                 <p><strong>Status:</strong> <span>{{ device.status }}</span></p>
                 <p><strong>Notes:</strong> <span>{{ device.notes }}</span></p>
             </div>
-            <a href="{% url 'device_edit' device.pk %}" class="btn btn-primary btn-full-width">Edit</a>
+            <a href="{% url 'update_device' device.pk %}" class="btn btn-primary btn-full-width">Edit</a>
         </div>
     </div>
 </div>
