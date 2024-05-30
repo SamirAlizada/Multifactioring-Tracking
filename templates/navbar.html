@@ -40,6 +40,8 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{% url 'device_list' %}">Devices</a>
+                        <a class="dropdown-item" href="{% url 'product_list' %}">Products</a>
+                        <a class="dropdown-item" href="{% url 'product_sold_list' %}">Product Solds</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -57,6 +59,19 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'add_device' %}">New Device</a>
+                            <a class="dropdown-item" href="{% url 'add_product' %}">Products</a>
+                            <a class="dropdown-item" href="{% url 'add_product_sold' %}">Product Solds</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" style="color: aliceblue;" href="#"
+                            id="navbarDropdownMenuLinkkk" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                            Panel
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{% url 'product_panel' %}">Products</a>
+                            <a class="dropdown-item" href="{% url 'product_sold_panel' %}">Product Solds</a>
                         </div>
                     </li>
                     <li class="nav-item">
