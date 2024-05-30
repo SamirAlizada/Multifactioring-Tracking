@@ -114,6 +114,8 @@ def product_list(request):
     if query:
         products = products.filter(product_name__icontains=query)
 
+    products = products.order_by("stock_number")
+
     return render(request, 'product/product_list.html', {'products': products})
 
 def product_sold_list(request):
@@ -235,6 +237,8 @@ def product_panel(request):
     query = request.GET.get('q')
     if query:
         products = products.filter(product_name__icontains=query)
+    
+    products = products.order_by("stock_number")
 
     return render(request, 'product/product_panel.html', {'products': products})
 
