@@ -32,7 +32,7 @@
                 </div>
                 {% if user.is_authenticated %}
                 <div class="text-right">
-                    <a class="btn btn-primary" href="{% url 'update_device' device.pk %}">Edit</a>
+                    <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Edit</a>
                     <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Are you sure delete this device?')">Delete</a>
                 </div>
                 {% endif %}
@@ -52,7 +52,7 @@
                 <p class="mb-0">Delivery Date: {{ device.delivery_date }}</p>
                 <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
             </div>
-            <a class="btn btn-secondary" href="{% url 'device_edit' device.pk %}">Edit</a>
+            <a class="btn btn-secondary" href="{% url 'update_device' device.pk %}">Edit</a>
         </li>
         {% endfor %}
     </ul> -->
