@@ -14,6 +14,22 @@
     }
 </style>
 
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == "error" %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% elif message.tags == "success" %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% elif message.tags == "warning" %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% elif message.tags == "info" %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% else %}
+            <div class="alert alert-secondary">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 <div class="container mt-5">
     <h1 class="mb-4">Product Sold Management Panel</h1>
 
