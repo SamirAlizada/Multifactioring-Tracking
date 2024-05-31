@@ -141,6 +141,7 @@ def product_sold_list(request):
 
         # Calculate the sale amount for the product_sold
         sale_amount = product_sold.count * product_sold.price
+        product_sold.total_price = sale_amount  # Add total_price attribute to each product_sold
 
         # Group product_solds by year-month key
         if month_key not in grouped_product_solds_dict:
@@ -265,6 +266,7 @@ def product_sold_panel(request):
 
         # Calculate the sale amount for the product_sold
         sale_amount = product_sold.count * product_sold.price
+        product_sold.total_price = sale_amount  # Add total_price attribute to each product_sold
 
         # Group product_solds by year-month key
         if month_key not in grouped_product_solds_dict:
