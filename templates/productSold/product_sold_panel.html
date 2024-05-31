@@ -67,7 +67,7 @@
                                             {{ product_sold.count }}
                                         <a href="{% url 'decrease_sold' product_sold.pk %}" class="btn btn-sm btn-warning">-</a>
                                         </p>
-                                        <p class="card-text"><strong>Total: </strong>${{ product_sold.price }}</p>
+                                        <p class="card-text"><strong>Total: </strong>${{ product_sold.total_price }}</p>
                                         <p class="card-text"><strong>Date: </strong>{{ product_sold.date|date:"d/m/Y" }}</p>
                                         <a class="btn btn-warning" href="{% url 'update_product_sold' product_sold.pk %}">Edit</a>
                                         <a class="btn btn-danger" href="{% url 'delete_product_sold' product_sold.pk %}" onclick="return confirm('Are you sure delete this product?')">Delete</a>
