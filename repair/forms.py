@@ -15,3 +15,13 @@ class ProductSoldForm(forms.ModelForm):
     class Meta:
         model = ProductSold
         fields = ['product_name', 'date', 'price', 'count']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get('product_name')
+        count = cleaned_data.get('count')
+
+        if product and count:
+            if product.stock_number < count:
+                raise forms.ValidationError(f"Only {product.stock_number} items available in stock.")
+        return cleaned_data

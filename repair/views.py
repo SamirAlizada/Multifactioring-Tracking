@@ -38,6 +38,8 @@ def add_product_sold(request):
             form.save()
             messages.success(request, 'Product sold added successfully!')
             return redirect('add_product_sold')
+        else:
+            messages.error(request, 'As many products as you entered are out of stock.')
     else:
         form = ProductSoldForm()
     return render(request, 'productSold/add_product_sold.html', {'form': form})
@@ -319,8 +321,16 @@ def decrease_stock(request, product_id):
 
 def increase_sold(request, pk):
     product_sold = get_object_or_404(ProductSold, pk=pk)
-    product_sold.count += 1
-    product_sold.save()
+    product = product_sold.product_name
+    
+    if product.stock_number > 0:
+        product_sold.count += 1
+        product_sold.save()
+        product.save()
+        messages.success(request, 'Product sold count increased successfully!')
+    else:
+        messages.error(request, 'No more stock available.')
+
     return redirect('product_sold_panel')
 
 def decrease_sold(request, pk):
