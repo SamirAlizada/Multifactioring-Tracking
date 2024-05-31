@@ -23,7 +23,7 @@ class Device(models.Model):
     device_name = models.CharField(max_length=100)
     customer_name = models.CharField(max_length=100)
     repair_cost = models.DecimalField(max_digits=10, decimal_places=2)
-    repair_duration = models.IntegerField()
+    repair_duration = models.PositiveIntegerField()
     add_date = models.DateField(default=timezone.now)
     delivery_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Received')
@@ -46,7 +46,7 @@ class Device(models.Model):
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
     price = models.FloatField()
-    stock_number = models.IntegerField()
+    stock_number = models.PositiveIntegerField()
 
     def __str__(self) -> str:
         return f"{self.product_name}"
@@ -55,7 +55,7 @@ class ProductSold(models.Model):
     product_name = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateField(default=timezone.now)
     price = models.FloatField()
-    count = models.IntegerField()
+    count = models.PositiveIntegerField()
 
     def __str__(self) -> str:
         return f"{self.product_name}"
