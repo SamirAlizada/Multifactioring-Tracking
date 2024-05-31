@@ -59,3 +59,26 @@ class ProductSold(models.Model):
 
     def __str__(self) -> str:
         return f"{self.product_name}"
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            # # Get the old count value if this row does not create a resale
+            previous = ProductSold.objects.get(pk=self.pk)
+            difference = self.count - previous.count
+        else:
+            # New for sale
+            difference = self.count
+        
+        # Update product stock
+        product = self.product_name
+        product.stock_number -= difference
+        product.save()
+
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        product = self.product_name
+        product.stock_number += self.count
+        product.save()
+        
+        super().delete(*args, **kwargs)
