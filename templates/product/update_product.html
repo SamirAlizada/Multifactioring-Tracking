@@ -58,6 +58,10 @@
     <h2>Add Product</h2>
     {% csrf_token %}
     <div class="form-group">
+        <label for="id_catefory_name">Category Name:</label>
+        {{ form.category_name }}
+    </div>
+    <div class="form-group">
         <label for="id_product_name">Product Name:</label>
         {{ form.product_name }}
     </div>
