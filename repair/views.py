@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Device, Product, ProductSold
-from .forms import DeviceForm, ProductForm, ProductSoldForm
+from .models import Device, Product, ProductSold, Category
+from .forms import DeviceForm, ProductForm, ProductSoldForm, CategoryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime, date, timedelta
@@ -110,15 +110,29 @@ def device_list(request):
     })
 
 def product_list(request):
+    # Get all categories
+    categories = Category.objects.all()
+
+    # Get all products or filter by selected category
     products = Product.objects.all()
 
+    # Retrieve the search query
     query = request.GET.get('q')
     if query:
         products = products.filter(product_name__icontains=query)
 
+    # Retrieve the selected category from the query parameters
+    selected_category_id = request.GET.get('category')
+    if selected_category_id:
+        products = products.filter(category_name_id=selected_category_id)
+
     products = products.order_by("stock_number")
 
-    return render(request, 'product/product_list.html', {'products': products})
+    return render(request, 'product/product_list.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category_id': selected_category_id
+    })
 
 def product_sold_list(request):
     today = date.today()
@@ -225,25 +239,39 @@ def delete_product(request, pk):
     product = Product.objects.get(pk=pk)
     product.delete()
     messages.success(request, 'Product deleted successfully!')
-    return redirect('product/product_panel')
+    return redirect('product_panel')
 
 def delete_product_sold(request, pk):
     product_sold = ProductSold.objects.get(pk=pk)
     product_sold.delete()
     messages.success(request, 'Product deleted successfully!')
-    return redirect('productSold/product_sold_panel')
+    return redirect('product_sold_panel')
 
 #Panels
 def product_panel(request):
+    # Get all categories
+    categories = Category.objects.all()
+
+    # Get all products or filter by selected category
     products = Product.objects.all()
 
+    # Retrieve the search query
     query = request.GET.get('q')
     if query:
         products = products.filter(product_name__icontains=query)
-    
+
+    # Retrieve the selected category from the query parameters
+    selected_category_id = request.GET.get('category')
+    if selected_category_id:
+        products = products.filter(category_name_id=selected_category_id)
+
     products = products.order_by("stock_number")
 
-    return render(request, 'product/product_panel.html', {'products': products})
+    return render(request, 'product/product_panel.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category_id': selected_category_id
+    })
 
 def product_sold_panel(request):
     today = date.today()
