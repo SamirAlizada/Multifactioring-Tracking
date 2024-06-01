@@ -1,15 +1,20 @@
 from django import forms
-from .models import Device, Product, ProductSold
+from .models import Device, Product, ProductSold, Category
 
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ['device_name', 'customer_name', 'repair_cost', 'repair_duration', 'add_date', 'status', 'notes']
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['product_name', 'price', 'stock_number']
+        fields = ['category_name', 'product_name', 'price', 'stock_number']
 
 class ProductSoldForm(forms.ModelForm):
     class Meta:

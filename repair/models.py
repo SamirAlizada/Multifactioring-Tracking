@@ -43,7 +43,14 @@ class Device(models.Model):
     def __str__(self):
         return f"{self.device_name} - {self.customer_name}"
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self) -> str:
+        return f"{self.name}"
+
 class Product(models.Model):
+    category_name = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     product_name = models.CharField(max_length=100)
     price = models.FloatField()
     stock_number = models.PositiveIntegerField()
