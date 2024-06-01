@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
+
 <style>
     .low-stock {
         background-color: #f8d7da;
@@ -30,16 +31,20 @@
                 {% endfor %}
             </div>
         </div>
-        
+
         <!-- Product List -->
         <div class="col-md-9">
             <!-- Search Form -->
-            <div class="form-inline mb-4">
-                <input type="text" name="q" class="form-control mr-sm-2" placeholder="Search for products" value="{{ request.GET.q }}">
-                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
-                &nbsp;
-                <a href="{% url 'product_list' %}?category={{ category.id }}" class="btn btn-outline-primary my-2 my-sm-0">Reset</a>
-            </div>
+            <form method="GET" action="{% url 'product_list' %}" class="mb-3">
+                <div class="form-inline mb-4">
+                    <input type="text" name="q" class="form-control mr-sm-2" placeholder="Search for products" value="{{ request.GET.q }}">
+                    <input type="hidden" name="category" value="{{ selected_category_id }}">
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                    &nbsp;
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-primary my-2 my-sm-0">Reset</a>
+                </div>
+            </form>
+            
 
             <!-- Product Cards -->
             <div class="row">
