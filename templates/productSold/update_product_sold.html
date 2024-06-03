@@ -55,7 +55,7 @@
 
 <br>
 <form method="post">
-    <h2>Add Product Sold</h2>
+    <h2>Edit Product Sold</h2>
     {% csrf_token %}
     <div class="form-group">
         <label for="id_product_name">Product Name:</label>
@@ -73,7 +73,7 @@
         <label for="id_price">Date:</label>
         {{ form.date }}
     </div>
-    <button type="submit">Add</button>
+    <button type="submit">Edit</button>
 </form>
 
 <br><br>
