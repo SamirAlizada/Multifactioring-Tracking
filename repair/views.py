@@ -4,8 +4,10 @@ from .forms import DeviceForm, ProductForm, ProductSoldForm, CategoryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from datetime import datetime, date, timedelta
-import logging
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, F, FloatField
+from django.db.models.functions import Cast
+
 
 #Add
 @login_required
@@ -142,9 +144,17 @@ def product_sold_list(request):
 
     # Get all product_solds or filter based on the search query
     product_solds = ProductSold.objects.all()
-    
-    if query:
-        product_solds = product_solds.filter(product_name__name__icontains=query)
+    # if query:
+    #     product_solds = product_solds.filter(product_name__name__icontains=query)
+
+    # Get selected year and month from GET parameters or use current values
+    current_year = today.year
+    current_month = today.month
+    selected_year = int(request.GET.get('year', current_year))
+    selected_month = int(request.GET.get('month', current_month))
+
+    # Filter product_solds by selected year and month
+    product_solds = product_solds.filter(date__year=selected_year, date__month=selected_month)
 
     # Create a dictionary for grouping product_solds by month
     grouped_product_solds_dict = {}
@@ -187,11 +197,33 @@ def product_sold_list(request):
         for item in sorted_grouped_product_solds_list
     }
 
-    # Pass the `grouped_product_solds` data to the `product_sold_list.html` template
-    return render(request, 'productSold/product_sold_list.html', {
+    # Generate years and months for dropdowns
+    years = range(2020, current_year + 1)
+    months = [
+        {'value': 1, 'name': 'January'},
+        {'value': 2, 'name': 'February'},
+        {'value': 3, 'name': 'March'},
+        {'value': 4, 'name': 'April'},
+        {'value': 5, 'name': 'May'},
+        {'value': 6, 'name': 'June'},
+        {'value': 7, 'name': 'July'},
+        {'value': 8, 'name': 'August'},
+        {'value': 9, 'name': 'September'},
+        {'value': 10, 'name': 'October'},
+        {'value': 11, 'name': 'November'},
+        {'value': 12, 'name': 'December'},
+    ]
+
+    # Pass the `grouped_product_solds` data to the template
+    context = {
         'grouped_product_solds': sorted_grouped_product_solds_dict,
         'today': today,
-    })
+        'years': years,
+        'months': months,
+        'selected_year': selected_year,
+        'selected_month': selected_month,
+    }
+    return render(request, 'productSold/product_sold_list.html', context)
 #------------------------------------------------------------------------------
 
 #Updates
@@ -281,9 +313,17 @@ def product_sold_panel(request):
 
     # Get all product_solds or filter based on the search query
     product_solds = ProductSold.objects.all()
-    
-    if query:
-        product_solds = product_solds.filter(product_name__name__icontains=query)
+    # if query:
+    #     product_solds = product_solds.filter(product_name__name__icontains=query)
+
+    # Get selected year and month from GET parameters or use current values
+    current_year = today.year
+    current_month = today.month
+    selected_year = int(request.GET.get('year', current_year))
+    selected_month = int(request.GET.get('month', current_month))
+
+    # Filter product_solds by selected year and month
+    product_solds = product_solds.filter(date__year=selected_year, date__month=selected_month)
 
     # Create a dictionary for grouping product_solds by month
     grouped_product_solds_dict = {}
@@ -326,11 +366,33 @@ def product_sold_panel(request):
         for item in sorted_grouped_product_solds_list
     }
 
-    # Pass the `grouped_product_solds` data to the `product_sold_list.html` template
-    return render(request, 'productSold/product_sold_panel.html', {
+    # Generate years and months for dropdowns
+    years = range(2020, current_year + 1)
+    months = [
+        {'value': 1, 'name': 'January'},
+        {'value': 2, 'name': 'February'},
+        {'value': 3, 'name': 'March'},
+        {'value': 4, 'name': 'April'},
+        {'value': 5, 'name': 'May'},
+        {'value': 6, 'name': 'June'},
+        {'value': 7, 'name': 'July'},
+        {'value': 8, 'name': 'August'},
+        {'value': 9, 'name': 'September'},
+        {'value': 10, 'name': 'October'},
+        {'value': 11, 'name': 'November'},
+        {'value': 12, 'name': 'December'},
+    ]
+
+    # Pass the `grouped_product_solds` data to the template
+    context = {
         'grouped_product_solds': sorted_grouped_product_solds_dict,
         'today': today,
-    })
+        'years': years,
+        'months': months,
+        'selected_year': selected_year,
+        'selected_month': selected_month,
+    }
+    return render(request, 'productSold/product_sold_panel.html', context)
 #------------------------------------------------------------------------------
 
 # Operations
@@ -413,3 +475,33 @@ def user_logout(request):
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
 #-----------------------------------------------------------------------------
+
+def sales_chart(request):
+    # Get all years from the data
+    years = ProductSold.objects.dates('date', 'year')
+    years = [year.year for year in years]
+
+    # Get selected year from the request or use the current year
+    selected_year = request.GET.get('year', date.today().year)
+
+    # Get sales data for the selected year, grouped by month
+    sales_data = (
+        ProductSold.objects.filter(date__year=selected_year)
+        .annotate(month=Cast('date__month', FloatField()))
+        .values('month')
+        .annotate(total_sales=Sum(F('count') * F('price'), output_field=FloatField()))
+        .order_by('month')
+    )
+
+    # Prepare data for Chart.js
+    labels = [date(1900, int(entry['month']), 1).strftime('%B') for entry in sales_data]
+    total_sales = [entry['total_sales'] for entry in sales_data]
+
+    context = {
+        "years": years,
+        "selected_year": int(selected_year),
+        "labels": labels,
+        "total_sales": total_sales,
+    }
+
+    return render(request, 'productSold/sales_chart.html', context)
