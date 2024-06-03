@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     #Add
@@ -27,6 +26,7 @@ urlpatterns = [
     path('update-product/<int:pk>/', update_product, name='update_product'),
     path('update-product-sold/<int:pk>/', update_product_sold, name='update_product_sold'),
     
+    # Operations
     path('increase/<int:product_id>/', increase_stock, name='increase_stock'),
     path('decrease/<int:product_id>/', decrease_stock, name='decrease_stock'),
 
@@ -36,8 +36,8 @@ urlpatterns = [
     path('device/<int:pk>/', device_detail, name='device_detail'),
     path('', searched_device, name='searched_device'),
 
-    
-    
+    # Chart
+    path('sales-chart/', sales_chart, name='sales_chart'),
 
     # Account
     path('login/', user_login, name='login'),
