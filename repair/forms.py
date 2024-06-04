@@ -17,9 +17,22 @@ class ProductForm(forms.ModelForm):
         fields = ['category_name', 'product_name', 'price', 'stock_number']
 
 class ProductSoldForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=True)
+
     class Meta:
         model = ProductSold
-        fields = ['product_name', 'date', 'price', 'count']
+        fields = ['category', 'product_name', 'date', 'price', 'count']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'category' in self.data:
+            try:
+                category_id = int(self.data.get('category'))
+                self.fields['product_name'].queryset = Product.objects.filter(category_name_id=category_id).order_by('product_name')
+            except (ValueError, TypeError):
+                self.fields['product_name'].queryset = Product.objects.none()
+        elif self.instance.pk:
+            self.fields['product_name'].queryset = self.instance.category_name.product_set.order_by('product_name')
 
     def clean(self):
         cleaned_data = super().clean()
