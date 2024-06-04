@@ -45,6 +45,15 @@ def add_product_sold(request):
     else:
         form = ProductSoldForm()
     return render(request, 'productSold/add_product_sold.html', {'form': form})
+
+from django.http import JsonResponse
+from .models import Product
+
+def load_products(request):
+    category_id = request.GET.get('category_id')
+    products = Product.objects.filter(category_name_id=category_id).order_by('product_name')
+    return JsonResponse(list(products.values('id', 'product_name')), safe=False)
+
 #------------------------------------------------------------------------------
 
 #Lists
