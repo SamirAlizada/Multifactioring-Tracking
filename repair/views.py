@@ -7,6 +7,7 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, FloatField
 from django.db.models.functions import Cast
+from django.http import JsonResponse
 
 
 #Add
@@ -45,9 +46,6 @@ def add_product_sold(request):
     else:
         form = ProductSoldForm()
     return render(request, 'productSold/add_product_sold.html', {'form': form})
-
-from django.http import JsonResponse
-from .models import Product
 
 def load_products(request):
     category_id = request.GET.get('category_id')
