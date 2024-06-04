@@ -54,6 +54,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=100)
     price = models.FloatField()
     stock_number = models.PositiveIntegerField()
+    date = models.DateField(default=timezone.now)
 
     def __str__(self) -> str:
         return f"{self.product_name}"
