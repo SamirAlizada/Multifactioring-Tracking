@@ -512,3 +512,49 @@ def sales_chart(request):
     }
 
     return render(request, 'productSold/sales_chart.html', context)
+
+def price_comparison_chart(request):
+    # Get the current year
+    current_year = date.today().year
+
+    # Get all years from the data
+    years = range(2020, current_year + 1)
+    months = [
+        {'value': 1, 'name': 'January'},
+        {'value': 2, 'name': 'February'},
+        {'value': 3, 'name': 'March'},
+        {'value': 4, 'name': 'April'},
+        {'value': 5, 'name': 'May'},
+        {'value': 6, 'name': 'June'},
+        {'value': 7, 'name': 'July'},
+        {'value': 8, 'name': 'August'},
+        {'value': 9, 'name': 'September'},
+        {'value': 10, 'name': 'October'},
+        {'value': 11, 'name': 'November'},
+        {'value': 12, 'name': 'December'},
+    ]
+
+    # Get selected year and month from the request or use the current year and month
+    selected_year = int(request.GET.get('year', current_year))
+    selected_month = int(request.GET.get('month', date.today().month))
+
+    # Calculate the total cost (Product prices * stock_number) for the selected month and year
+    total_cost = sum(product.price * product.stock_number for product in Product.objects.filter(date__year=selected_year, date__month=selected_month))
+
+    # Calculate the total income (ProductSold prices * count) for the selected month and year
+    total_income = sum(product_sold.price * product_sold.count for product_sold in ProductSold.objects.filter(date__year=selected_year, date__month=selected_month))
+
+    # Calculate the total price difference
+    total_price_difference = total_income - total_cost
+
+    context = {
+        "years": years,
+        "months": months,
+        "selected_year": selected_year,
+        "selected_month": selected_month,
+        "total_cost": total_cost,
+        "total_income": total_income,
+        "total_price_difference": total_price_difference,
+    }
+
+    return render(request, 'productSold/price_comparison_chart.html', context)
