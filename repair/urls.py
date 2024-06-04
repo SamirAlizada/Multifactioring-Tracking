@@ -39,6 +39,8 @@ urlpatterns = [
 
     # Chart
     path('sales-chart/', sales_chart, name='sales_chart'),
+    path('price-comparison-chart/', price_comparison_chart, name='price_comparison_chart'),
+
 
     # Account
     path('login/', user_login, name='login'),
