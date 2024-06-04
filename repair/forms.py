@@ -5,6 +5,9 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ['device_name', 'customer_name', 'repair_cost', 'repair_duration', 'add_date', 'status', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'style': 'width:100%;'}),
+        }
 
 class CategoryForm(forms.ModelForm):
     class Meta:
