@@ -6,6 +6,7 @@ urlpatterns = [
     path('device/add/', add_device, name='add_device'),
     path('add-product/', add_product, name='add_product'),
     path('add-product-sold/', add_product_sold, name='add_product_sold'),
+    path('ajax/load-products/', load_products, name='load_products'),
 
     #List
     path('device/', device_list, name='device_list'),
