@@ -14,8 +14,8 @@
     input[type="text"],
     input[type="date"],
     input[type="number"],
-    input[type="textarea"],
-    select {
+    select,
+    textarea {
         width: 100%;
         padding: 10px;
         margin: 5px 0;
@@ -43,14 +43,18 @@
         font-weight: bold;
         margin-bottom: 5px;
     }
+
+    .alert {
+        margin-top: 20px;
+    }
 </style>
 
 {% if messages %}
-<div class="alert alert-success" role="alert">
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
-</div>
+    <div class="alert alert-success" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
 {% endif %}
 
 <br>
@@ -58,31 +62,35 @@
     <h2>Add Device</h2>
     {% csrf_token %}
     <div class="form-group">
-        <label for="id_product_name">Device Name:</label>
+        <label for="id_device_name">Device Name:</label>
         {{ form.device_name }}
     </div>
     <div class="form-group">
-        <label for="id_date">Costumer Name:</label>
+        <label for="id_customer_name">Customer Name:</label>
         {{ form.customer_name }}
     </div>
     <div class="form-group">
-        <label for="id_price">Cost:</label>
+        <label for="id_repair_cost">Repair Cost:</label>
         {{ form.repair_cost }}
     </div>
     <div class="form-group">
-        <label for="id_stock_number">Add Date:</label>
-        {{ form.add_date }}
-    </div>
-    <div class="form-group">
-        <label for="id_stock_number">Repair Duration:</label>
+        <label for="id_repair_duration">Repair Duration:</label>
         {{ form.repair_duration }}
     </div>
     <div class="form-group">
-        <label for="id_stock_number">Status:</label>
+        <label for="id_add_date">Add Date:</label>
+        {{ form.add_date }}
+    </div>
+    <div class="form-group">
+        <label for="id_delivery_date">Delivery Date:</label>
+        {{ form.delivery_date }}
+    </div>
+    <div class="form-group">
+        <label for="id_status">Status:</label>
         {{ form.status }}
     </div>
     <div class="form-group">
-        <label for="id_stock_number">Notes:</label>
+        <label for="id_notes">Notes:</label>
         {{ form.notes }}
     </div>
     <button type="submit">Add</button>
