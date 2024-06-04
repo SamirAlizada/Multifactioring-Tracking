@@ -66,6 +66,10 @@
     <h2>Add Product Sold</h2>
     {% csrf_token %}
     <div class="form-group">
+        <label for="id_category">Category:</label>
+        {{ form.category }}
+    </div>
+    <div class="form-group">
         <label for="id_product_name">Product Name:</label>
         {{ form.product_name }}
     </div>
@@ -84,5 +88,26 @@
     <button type="submit">Add</button>
 </form>
 
-<br><br>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#id_category').change(function () {
+            var url = "{% url 'load_products' %}";
+            var categoryId = $(this).val();
+            $.ajax({
+                url: url,
+                data: {
+                    'category_id': categoryId
+                },
+                success: function (data) {
+                    $('#id_product_name').empty();
+                    $('#id_product_name').append('<option value="">Select a product</option>');
+                    $.each(data, function (key, value) {
+                        $('#id_product_name').append('<option value="' + value.id + '">' + value.product_name + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
 {% endblock content %}
