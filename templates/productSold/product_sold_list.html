@@ -21,18 +21,18 @@
     <form method="GET" class="mb-3" id="filterForm">
         <div class="form-inline mb-4">
             <label for="year" class="mr-2">Year:</label>
-            <select name="year" id="year" class="form-control mr-2">
+            <select name="year" id="year" class="form-control mr-2" onchange="this.form.submit()">
                 {% for y in years %}
                     <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
                 {% endfor %}
             </select>
             <label for="month" class="mr-2">Month:</label>
-            <select name="month" id="month" class="form-control mr-2">
+            <select name="month" id="month" class="form-control mr-2" onchange="this.form.submit()">
                 {% for m in months %}
                     <option value="{{ m.value }}" {% if m.value == selected_month %}selected{% endif %}>{{ m.name }}</option>
                 {% endfor %}
             </select>
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Filter</button>
+            <!-- <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Filter</button> -->
         </div>
     </form>
 
