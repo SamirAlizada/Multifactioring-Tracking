@@ -38,8 +38,10 @@ urlpatterns = [
     path('', searched_device, name='searched_device'),
 
     # Chart
-    path('sales-chart/', sales_chart, name='sales_chart'),
-    path('price-comparison-chart/', price_comparison_chart, name='price_comparison_chart'),
+    # path('sales-chart/', sales_chart, name='sales_chart'),
+    # path('price-comparison-chart/', price_comparison_chart, name='price_comparison_chart'),
+    path('combined-charts-view/', combined_charts_view, name='combined_charts_view'),
+
 
 
     # Account
