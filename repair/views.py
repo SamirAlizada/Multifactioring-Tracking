@@ -154,11 +154,42 @@ def product_sold_list(request):
     # if query:
     #     product_solds = product_solds.filter(product_name__name__icontains=query)
 
-    # Get selected year and month from GET parameters or use current values
+    # Get the earliest year from the ProductSold data
+    if ProductSold.objects.exists():
+        first_product_sold_year = ProductSold.objects.earliest('date').date.year
+    else:
+        first_product_sold_year = today.year
+
+    if Product.objects.exists():
+        first_product_year = Product.objects.earliest('date').date.year
+    else:
+        first_product_year = today.year
+
+    start_year = min(first_product_year, first_product_sold_year)
+
+    # Generate years from the earliest year to the current year
     current_year = today.year
-    current_month = today.month
+    years = range(start_year, current_year + 1)
+
+    # Generate months
+    months = [
+        {'value': 1, 'name': 'January'},
+        {'value': 2, 'name': 'February'},
+        {'value': 3, 'name': 'March'},
+        {'value': 4, 'name': 'April'},
+        {'value': 5, 'name': 'May'},
+        {'value': 6, 'name': 'June'},
+        {'value': 7, 'name': 'July'},
+        {'value': 8, 'name': 'August'},
+        {'value': 9, 'name': 'September'},
+        {'value': 10, 'name': 'October'},
+        {'value': 11, 'name': 'November'},
+        {'value': 12, 'name': 'December'},
+    ]
+
+    # Get selected year and month from GET parameters or use current values
     selected_year = int(request.GET.get('year', current_year))
-    selected_month = int(request.GET.get('month', current_month))
+    selected_month = int(request.GET.get('month', today.month))
 
     # Filter product_solds by selected year and month
     product_solds = product_solds.filter(date__year=selected_year, date__month=selected_month)
@@ -204,23 +235,6 @@ def product_sold_list(request):
         for item in sorted_grouped_product_solds_list
     }
 
-    # Generate years and months for dropdowns
-    years = range(2020, current_year + 1)
-    months = [
-        {'value': 1, 'name': 'January'},
-        {'value': 2, 'name': 'February'},
-        {'value': 3, 'name': 'March'},
-        {'value': 4, 'name': 'April'},
-        {'value': 5, 'name': 'May'},
-        {'value': 6, 'name': 'June'},
-        {'value': 7, 'name': 'July'},
-        {'value': 8, 'name': 'August'},
-        {'value': 9, 'name': 'September'},
-        {'value': 10, 'name': 'October'},
-        {'value': 11, 'name': 'November'},
-        {'value': 12, 'name': 'December'},
-    ]
-
     # Pass the `grouped_product_solds` data to the template
     context = {
         'grouped_product_solds': sorted_grouped_product_solds_dict,
@@ -231,6 +245,7 @@ def product_sold_list(request):
         'selected_month': selected_month,
     }
     return render(request, 'productSold/product_sold_list.html', context)
+
 #------------------------------------------------------------------------------
 
 #Updates
@@ -517,8 +532,14 @@ def price_comparison_chart(request):
     # Get the current year
     current_year = date.today().year
 
-    # Get all years from the data
-    years = range(2020, current_year + 1)
+    # Get the earliest year from the Product and ProductSold data
+    first_product_year = Product.objects.earliest('date').date.year if Product.objects.exists() else current_year
+    first_product_sold_year = ProductSold.objects.earliest('date').date.year if ProductSold.objects.exists() else current_year
+    start_year = min(first_product_year, first_product_sold_year)
+
+    # Get all years from the data starting from the earliest year
+    years = range(start_year, current_year + 1)
+
     months = [
         {'value': 1, 'name': 'January'},
         {'value': 2, 'name': 'February'},
@@ -558,3 +579,4 @@ def price_comparison_chart(request):
     }
 
     return render(request, 'productSold/price_comparison_chart.html', context)
+
