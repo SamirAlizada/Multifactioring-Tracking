@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     #Add
     path('device/add/', add_device, name='add_device'),
+    path('add-category/', add_category, name='add_category'),
     path('add-product/', add_product, name='add_product'),
     path('add-product-sold/', add_product_sold, name='add_product_sold'),
     path('ajax/load-products/', load_products, name='load_products'),
@@ -14,16 +15,19 @@ urlpatterns = [
     path('product-sold-list/', product_sold_list, name='product_sold_list'),
 
     #Panel
+    path('category-panel/', category_panel, name='category_panel'),
     path('product-panel/', product_panel, name='product_panel'),
     path('product-sold-panel/', product_sold_panel, name='product_sold_panel'),
 
     #Delete
     path('delete-device/<int:pk>/', delete_device, name='delete_device'),
+    path('delete-category/<int:pk>/', delete_category, name='delete_category'),
     path('delete-product/<int:pk>/', delete_product, name='delete_product'),
     path('delete-product-sold/<int:pk>/', delete_product_sold, name='delete_product_sold'),
 
     #Update
     path('device/<int:pk>/update/', update_device, name='update_device'),
+    path('update-category/<int:pk>/', update_category, name='update_category'),
     path('update-product/<int:pk>/', update_product, name='update_product'),
     path('update-product-sold/<int:pk>/', update_product_sold, name='update_product_sold'),
     
