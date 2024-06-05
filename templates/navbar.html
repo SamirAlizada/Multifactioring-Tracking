@@ -61,6 +61,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'add_device' %}">Device</a>
+                            <a class="dropdown-item" href="{% url 'add_category' %}">Category</a>
                             <a class="dropdown-item" href="{% url 'add_product' %}">Product</a>
                             <a class="dropdown-item" href="{% url 'add_product_sold' %}">Product Sold</a>
                         </div>
@@ -72,8 +73,9 @@
                             Panel
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{% url 'product_panel' %}">Products</a>
-                            <a class="dropdown-item" href="{% url 'product_sold_panel' %}">Product Solds</a>
+                            <a class="dropdown-item" href="{% url 'category_panel' %}">Category</a>
+                            <a class="dropdown-item" href="{% url 'product_panel' %}">Product</a>
+                            <a class="dropdown-item" href="{% url 'product_sold_panel' %}">Product Sold</a>
                         </div>
                     </li>
                     <li class="nav-item">
