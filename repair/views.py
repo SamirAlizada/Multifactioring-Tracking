@@ -23,6 +23,17 @@ def add_device(request):
         form = DeviceForm()
     return render(request, 'repairs/add_device.html', {'form': form})
 
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category added successfully!')
+            return redirect('add_category') 
+    else:
+        form = CategoryForm()
+    return render(request, 'category/add_category.html', {'form': form})
+
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -261,6 +272,16 @@ def update_device(request, pk):
         form = DeviceForm(instance=device)
     return render(request, 'repairs/update_device.html', {'form': form})
 
+def update_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    form = CategoryForm(instance=category)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('category_panel')
+    return render(request, 'category/update_category.html', {'form': form})
+
 def update_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     form = ProductForm(instance=product)
@@ -289,19 +310,33 @@ def delete_device(request, pk):
     device.delete()
     return redirect('device_list')
 
+def delete_category(request, pk):
+    category = Category.objects.get(pk=pk)
+    category.delete()
+    return redirect('category_panel')
+
 def delete_product(request, pk):
     product = Product.objects.get(pk=pk)
     product.delete()
-    messages.success(request, 'Product deleted successfully!')
+    # messages.success(request, 'Product deleted successfully!')
     return redirect('product_panel')
 
 def delete_product_sold(request, pk):
     product_sold = ProductSold.objects.get(pk=pk)
     product_sold.delete()
-    messages.success(request, 'Product deleted successfully!')
+    # messages.success(request, 'Product deleted successfully!')
     return redirect('product_sold_panel')
 
 #Panels
+def category_panel(request):
+    categories = Category.objects.all()
+
+    query = request.GET.get('q')
+    if query:
+        categories = categories.filter(name__icontains=query)
+
+    return render(request, 'category/category_panel.html', {'categories': categories})
+
 def product_panel(request):
     # Get all categories
     categories = Category.objects.all()
