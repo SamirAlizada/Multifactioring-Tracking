@@ -12,6 +12,10 @@
         font-weight: bold;
         margin-right: 10px;
     }
+
+    .card {
+        height: 100%; /* Make all cards the same height */
+    }
 </style>
 
 <div class="container mt-5">
@@ -61,9 +65,11 @@
                                     {{ product.stock_number }}
                                     <a href="{% url 'decrease_stock' product.pk %}" class="btn btn-sm btn-warning">-</a>
                                 </p>
-                                <a href="{% url 'update_product' product.id %}" class="btn btn-warning">Edit</a>
-                                <a href="{% url 'delete_product' product.id %}" class="btn btn-danger"
+                                <div>
+                                    <a href="{% url 'update_product' product.id %}" class="btn btn-warning">Edit</a>
+                                    <a href="{% url 'delete_product' product.id %}" class="btn btn-danger"
                                     onclick="return confirm('Are you sure delete this product?')">Delete</a>
+                                </div>
                             </div>
                         </div>
                     </div>

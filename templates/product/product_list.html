@@ -11,6 +11,29 @@
         font-size: 1.5rem;
         font-weight: bold;
         margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-body {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .product-name {
+        flex-grow: 1;
     }
 </style>
 
@@ -44,18 +67,17 @@
                     <a href="{% url 'product_list' %}" class="btn btn-outline-primary my-2 my-sm-0">Reset</a>
                 </div>
             </form>
-            
 
             <!-- Product Cards -->
             <div class="row">
                 {% for product in products %}
-                <div class="col-md-4 mb-4">
-                    <div class="card {% if product.stock_number < 10 %}low-stock{% endif %}">
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card {% if product.stock_number < 10 %}low-stock{% endif %} w-100">
                         <div class="card-body d-flex align-items-center">
                             <div class="product-number">
                                 {{ forloop.counter }}
                             </div>
-                            <div>
+                            <div class="product-name">
                                 <h5 class="card-title">{{ product.product_name }}</h5>
                                 <p class="card-text"><strong>Price: </strong>${{ product.price }}</p>
                                 <p class="card-text"><strong>Stock: </strong>{{ product.stock_number }}</p>
