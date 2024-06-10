@@ -35,7 +35,12 @@ class ProductSoldForm(forms.ModelForm):
             except (ValueError, TypeError):
                 self.fields['product_name'].queryset = Product.objects.none()
         elif self.instance.pk:
-            self.fields['product_name'].queryset = self.instance.category_name.product_set.order_by('product_name')
+            # Set the initial value for category based on the product's category
+            self.fields['category'].initial = self.instance.product_name.category_name
+            # Filter product_name queryset based on the current category
+            self.fields['product_name'].queryset = Product.objects.filter(category_name=self.instance.product_name.category_name).order_by('product_name')
+        else:
+            self.fields['product_name'].queryset = Product.objects.none()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -46,3 +51,6 @@ class ProductSoldForm(forms.ModelForm):
             if product.stock_number < count:
                 raise forms.ValidationError(f"Only {product.stock_number} items available in stock.")
         return cleaned_data
+
+
+
