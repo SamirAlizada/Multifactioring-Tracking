@@ -618,7 +618,23 @@ def custom_404(request, exception):
 #     return render(request, 'productSold/price_comparison_chart.html', context)
 
 
+from django.db.models import Sum, FloatField
+from django.db.models.functions import Cast
+from datetime import date
 
+def device_monthly_repair_costs(selected_year):
+    monthly_repair_costs_data = (
+        Device.objects.filter(add_date__year=selected_year)
+        .annotate(month=Cast('add_date__month', FloatField()))
+        .values('month')
+        .annotate(total_repair_cost=Sum('repair_cost', output_field=FloatField()))
+        .order_by('month')
+    )
+
+    device_labels = [date(1900, int(entry['month']), 1).strftime('%B') for entry in monthly_repair_costs_data]
+    total_repair_costs = [entry['total_repair_cost'] for entry in monthly_repair_costs_data]
+
+    return device_labels, total_repair_costs
 
 
 def sales_chart(request):
@@ -706,10 +722,16 @@ def price_comparison_chart(request):
 def combined_charts_view(request):
     sales_context = sales_chart(request)
     price_comparison_context = price_comparison_chart(request)
-    
+
+    # Get the current year for device monthly repair costs
+    selected_year = int(request.GET.get('year', date.today().year))
+    device_labels, total_repair_costs = device_monthly_repair_costs(selected_year)
+
     context = {
         **sales_context,
         **price_comparison_context,
+        "device_labels": device_labels,
+        "total_repair_costs": total_repair_costs,
     }
-    
+
     return render(request, 'productSold/combined_charts.html', context)
