@@ -294,13 +294,15 @@ def update_product(request, pk):
 
 def update_product_sold(request, pk):
     product_sold = get_object_or_404(ProductSold, pk=pk)
-    form = ProductSoldForm(instance=product_sold)
     if request.method == 'POST':
         form = ProductSoldForm(request.POST, instance=product_sold)
         if form.is_valid():
             form.save()
             return redirect('product_sold_panel')
+    else:
+        form = ProductSoldForm(instance=product_sold)
     return render(request, 'productSold/update_product_sold.html', {'form': form})
+
 #----------------------------------------------------------------------
 
 #Delete
