@@ -617,11 +617,6 @@ def custom_404(request, exception):
 
 #     return render(request, 'productSold/price_comparison_chart.html', context)
 
-
-from django.db.models import Sum, FloatField
-from django.db.models.functions import Cast
-from datetime import date
-
 def device_monthly_repair_costs(selected_year):
     monthly_repair_costs_data = (
         Device.objects.filter(add_date__year=selected_year)
