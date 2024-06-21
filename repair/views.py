@@ -144,7 +144,12 @@ def product_list(request):
     # Retrieve the selected category from the query parameters
     selected_category_id = request.GET.get('category')
     if selected_category_id:
-        products = products.filter(category_name_id=selected_category_id)
+        try:
+            selected_category_id = int(selected_category_id)
+            products = products.filter(category_name_id=selected_category_id)
+        except ValueError:
+            # Handle invalid category id
+            selected_category_id = None
 
     products = products.order_by("stock_number")
 
@@ -354,7 +359,12 @@ def product_panel(request):
     # Retrieve the selected category from the query parameters
     selected_category_id = request.GET.get('category')
     if selected_category_id:
-        products = products.filter(category_name_id=selected_category_id)
+        try:
+            selected_category_id = int(selected_category_id)
+            products = products.filter(category_name_id=selected_category_id)
+        except ValueError:
+            # Handle invalid category id
+            selected_category_id = None
 
     products = products.order_by("stock_number")
 
