@@ -563,7 +563,7 @@ def custom_404(request, exception):
 #         "total_sales": total_sales,
 #     }
 
-#     return render(request, 'productSold/sales_chart.html', context)
+#     return render(request, 'chart/sales_chart.html', context)
 
 # def price_comparison_chart(request):
 #     # Get the current year
@@ -615,7 +615,7 @@ def custom_404(request, exception):
 #         "total_price_difference": total_price_difference,
 #     }
 
-#     return render(request, 'productSold/price_comparison_chart.html', context)
+#     return render(request, 'chart/price_comparison_chart.html', context)
 
 def device_monthly_repair_costs(selected_year):
     monthly_repair_costs_data = (
@@ -729,4 +729,4 @@ def combined_charts_view(request):
         "total_repair_costs": total_repair_costs,
     }
 
-    return render(request, 'productSold/combined_charts.html', context)
+    return render(request, 'chart/combined_charts.html', context)
