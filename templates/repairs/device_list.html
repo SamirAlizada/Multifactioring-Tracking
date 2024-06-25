@@ -5,57 +5,86 @@
     <h1 class="display-4"><strong>Device List</strong></h1>
     
     <div class="my-3">
-        <form method="get" action="">
-            <input type="text" name="q" class="form-control" placeholder="Search devices">
+        <form method="get" action="" class="form-row">
+            <div class="form-group col-auto d-flex align-items-center">
+                <label for="year" class="mr-2"><strong>Year:</strong></label>
+                <select name="year" id="year" class="form-control" onchange="this.form.submit()">
+                    {% for year in years %}
+                    <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-auto d-flex align-items-center">
+                <label for="month" class="mr-2"><strong>Month:</strong></label>
+                <select name="month" id="month" class="form-control" onchange="this.form.submit()">
+                    {% for month in months %}
+                    <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>{{ month.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col"></div>
+            <div class="form-group col">
+                <div class="d-flex">
+                    <input type="text" name="q" class="form-control mr-2" placeholder="Cihaz adı axtarın" value="{{ request.GET.q }}">
+                    <button class="btn btn-outline-primary" type="submit">Axtar</button>
+                    <a href="{% url 'device_list' %}" class="btn btn-outline-primary ml-2">Sıfırla</a>
+                </div>
+            </div>
         </form>
+        
+        
     </div>
     
-    {% for month, data in grouped_devices.items %}
-    <div class="card my-3">
-        <div class="card-header">
-            <h2>{{ month }}</h2>
-            <p>Total Repair Cost: ${{ data.total_repair_cost }}</p>
-        </div>
-        <ul class="list-group list-group-flush">
-            {% for device in data.devices %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <h5>{{ forloop.counter }}. <a style="text-decoration: none;" href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
-                    <p class="mb-0"><strong>Customer:</strong> {{ device.customer_name }}</p>
-                    <p class="mb-0"><strong>Delivery Date:</strong> {{ device.delivery_date|date:"d/m/Y" }}</p>
-                    <p class="mb-0"><strong>Status:</strong> 
-                        <span class="badge 
-                            {% if device.status == 'Received' %}badge-info{% elif device.status == 'In Progress' %}badge-warning{% elif device.status == 'Completed' %}badge-success{% elif device.status == 'Delivered' %}badge-secondary{% endif %}">
-                            {{ device.status }}
-                        </span>
-                    </p>
-                </div>
-                {% if user.is_authenticated %}
-                <div class="text-right">
-                    <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Edit</a>
-                    <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Are you sure delete this device?')">Delete</a>
-                </div>
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endfor %}
-
-    <!-- <h2 class="my-4">Devices Near End Date</h2>
-    <ul class="list-group">
-        {% for device in devices_near_end_date %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-                <h5><a href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
-                <p class="mb-0">Customer: {{ device.customer_name }}</p>
-                <p class="mb-0">Delivery Date: {{ device.delivery_date }}</p>
-                <p class="mb-0">Status: <span class="badge badge-info">{{ device.status }}</span></p>
+    {% if grouped_devices %}
+        {% for month, data in grouped_devices.items %}
+        <div class="card my-3">
+            <div class="card-header">
+                <h2>{{ month }}</h2>
+                <p>Total Repair Cost: ${{ data.total_repair_cost }}</p>
             </div>
-            <a class="btn btn-secondary" href="{% url 'update_device' device.pk %}">Edit</a>
-        </li>
+            <ul class="list-group list-group-flush">
+                {% if data.devices %}
+                    {% for device in data.devices %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5>{{ forloop.counter }}. <a style="text-decoration: none;" href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
+                            <p class="mb-0"><strong>Müştəri:</strong> {{ device.customer_name }}</p>
+                            <p class="mb-0"><strong>Çatdırılma Tarixi:</strong> {{ device.delivery_date|date:"d/m/Y" }}</p>
+                            <p class="mb-0"><strong>Status:</strong> 
+                                <span class="badge 
+                                    {% if device.status == 'Qəbul edildi' %}badge-info{% elif device.status == 'Davam edir' %}badge-warning{% elif device.status == 'Tamamlandı' %}badge-success{% elif device.status == 'Çatdırıldı' %}badge-secondary{% endif %}">
+                                    {{ device.status }}
+                                </span>
+                            </p>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <div class="text-right">
+                            <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Düzəliş Et</a>
+                            <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Bu cihazı silmək istədiyinizə əminsiniz?')">Sil</a>
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">
+                        <div class="text-center">
+                            <p>Arama sonucu "{{ query }}" ilə uyğun cihaz tapılmadı.</p>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
         {% endfor %}
-    </ul> -->
+    {% else %}
+        <div class="card my-3">
+            <div class="card-header">
+                <!-- <h2>Axtarış Nəticəsi</h2> -->
+            </div>
+            <div class="card-body">
+                <p class="text-center">Axtarışınıza uyğun cihaz tapılmadı.</p>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 <br><br>
