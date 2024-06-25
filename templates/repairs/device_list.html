@@ -25,9 +25,9 @@
             <div class="form-group col"></div>
             <div class="form-group col">
                 <div class="d-flex">
-                    <input type="text" name="q" class="form-control mr-2" placeholder="Cihaz adı axtarın" value="{{ request.GET.q }}">
-                    <button class="btn btn-outline-primary" type="submit">Axtar</button>
-                    <a href="{% url 'device_list' %}" class="btn btn-outline-primary ml-2">Sıfırla</a>
+                    <input type="text" name="q" class="form-control mr-2" placeholder="Search for device name" value="{{ request.GET.q }}">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                    <a href="{% url 'device_list' %}" class="btn btn-outline-primary ml-2">Reset</a>
                 </div>
             </div>
         </form>
@@ -48,19 +48,19 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <div>
                             <h5>{{ forloop.counter }}. <a style="text-decoration: none;" href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
-                            <p class="mb-0"><strong>Müştəri:</strong> {{ device.customer_name }}</p>
-                            <p class="mb-0"><strong>Çatdırılma Tarixi:</strong> {{ device.delivery_date|date:"d/m/Y" }}</p>
+                            <p class="mb-0"><strong>Customer:</strong> {{ device.customer_name }}</p>
+                            <p class="mb-0"><strong>Delivery Date:</strong> {{ device.delivery_date|date:"d/m/Y" }}</p>
                             <p class="mb-0"><strong>Status:</strong> 
                                 <span class="badge 
-                                    {% if device.status == 'Qəbul edildi' %}badge-info{% elif device.status == 'Davam edir' %}badge-warning{% elif device.status == 'Tamamlandı' %}badge-success{% elif device.status == 'Çatdırıldı' %}badge-secondary{% endif %}">
+                                    {% if device.status == 'Received' %}badge-info{% elif device.status == 'In Progress' %}badge-warning{% elif device.status == 'Completed' %}badge-success{% elif device.status == 'Delivered' %}badge-secondary{% endif %}">
                                     {{ device.status }}
                                 </span>
                             </p>
                         </div>
                         {% if user.is_authenticated %}
                         <div class="text-right">
-                            <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Düzəliş Et</a>
-                            <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Bu cihazı silmək istədiyinizə əminsiniz?')">Sil</a>
+                            <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Edit</a>
+                            <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Are you sure delete this device?')">Delete</a>
                         </div>
                         {% endif %}
                     </li>
@@ -68,7 +68,7 @@
                 {% else %}
                     <li class="list-group-item">
                         <div class="text-center">
-                            <p>Arama sonucu "{{ query }}" ilə uyğun cihaz tapılmadı.</p>
+                            <p>No device found matching your search.</p>
                         </div>
                     </li>
                 {% endif %}
@@ -78,10 +78,9 @@
     {% else %}
         <div class="card my-3">
             <div class="card-header">
-                <!-- <h2>Axtarış Nəticəsi</h2> -->
             </div>
             <div class="card-body">
-                <p class="text-center">Axtarışınıza uyğun cihaz tapılmadı.</p>
+                <p class="text-center">No device found matching your search.</p>
             </div>
         </div>
     {% endif %}
