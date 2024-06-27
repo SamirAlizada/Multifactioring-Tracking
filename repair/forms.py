@@ -47,6 +47,9 @@ class ProductSoldForm(forms.ModelForm):
     class Meta:
         model = ProductSold
         fields = ['category', 'product_name', 'date', 'price', 'count']
+        widgets = {
+            'date': CustomDateInput(attrs={'class': 'form-control', 'placeholder': 'DD/MM/YYYY'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,6 +76,10 @@ class ProductSoldForm(forms.ModelForm):
             if product.stock_number < count:
                 raise forms.ValidationError(f"Only {product.stock_number} items available in stock.")
         return cleaned_data
-
-
-
+    
+    def clean_date(self):
+        date = self.cleaned_data['date']
+        try:
+            return datetime.strptime(date, '%d/%m/%Y').date()
+        except ValueError:
+            raise forms.ValidationError("Enter the date in DD/MM/YYYY format.")
