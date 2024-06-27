@@ -1,13 +1,35 @@
 from django import forms
 from .models import Device, Product, ProductSold, Category
+from datetime import datetime
+
+class CustomDateInput(forms.DateInput):
+    input_type = 'text'
+    format = '%d/%m/%Y'
+
+    def __init__(self, *args, **kwargs):
+        kwargs['format'] = self.format
+        super().__init__(*args, **kwargs)
+
+    def format_value(self, value):
+        if value:
+            return value.strftime(self.format)
+        return ''
 
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ['device_name', 'customer_name', 'repair_cost', 'repair_duration', 'add_date', 'status', 'notes']
         widgets = {
+            'add_date': CustomDateInput(attrs={'class': 'form-control', 'placeholder': 'DD/MM/YYYY'}),
             'notes': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'style': 'width:100%;'}),
         }
+
+    def clean_add_date(self):
+        add_date = self.cleaned_data['add_date']
+        try:
+            return datetime.strptime(add_date, '%d/%m/%Y').date()
+        except ValueError:
+            raise forms.ValidationError("Enter the date in DD/MM/YYYY format.")
 
 class CategoryForm(forms.ModelForm):
     class Meta:
