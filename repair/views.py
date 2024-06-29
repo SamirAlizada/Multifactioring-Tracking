@@ -650,7 +650,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('device_list')
+    return redirect('searched_device')
 #-----------------------------------------------------------------------------
 
 #404
