@@ -384,10 +384,27 @@ def update_device(request, pk):
     if request.method == "POST":
         form = DeviceForm(request.POST, instance=device)
         if form.is_valid():
-            device = form.save()
+            device = form.save(commit=False)
+            add_date_str = form.cleaned_data['add_date']
+            if isinstance(add_date_str, str):  # Note: We parse only when it is a string
+                try:
+                    device.add_date = datetime.strptime(add_date_str, '%d/%m/%Y').date()
+                except ValueError:
+                    form.add_error('add_date', 'Enter the date in DD/MM/YYYY format.')
+                    return render(request, 'repairs/update_device.html', {'form': form})
+            device.save()
             return redirect('device_detail', pk=device.pk)
     else:
-        form = DeviceForm(instance=device)
+        initial_data = {
+            'device_name': device.device_name,
+            'customer_name': device.customer_name,
+            'repair_cost': device.repair_cost,
+            'repair_duration': device.repair_duration,
+            'add_date': device.add_date.strftime('%d/%m/%Y') if isinstance(device.add_date, date) else '',  # Note: date formatını doğru şekilde kontrol ediyoruz
+            'status': device.status,
+            'notes': device.notes,
+        }
+        form = DeviceForm(initial=initial_data, instance=device)
     return render(request, 'repairs/update_device.html', {'form': form})
 
 def update_category(request, pk):
