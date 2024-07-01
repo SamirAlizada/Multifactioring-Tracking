@@ -815,31 +815,37 @@ def price_comparison_chart(request):
     years = range(start_year, current_year + 1)
 
     months = [
-        {'value': 1, 'name': 'January'},
-        {'value': 2, 'name': 'February'},
-        {'value': 3, 'name': 'March'},
-        {'value': 4, 'name': 'April'},
+        {'value': 1, 'name': 'Yanvar'},
+        {'value': 2, 'name': 'Fevral'},
+        {'value': 3, 'name': 'Mart'},
+        {'value': 4, 'name': 'Aprel'},
         {'value': 5, 'name': 'May'},
-        {'value': 6, 'name': 'June'},
-        {'value': 7, 'name': 'July'},
-        {'value': 8, 'name': 'August'},
-        {'value': 9, 'name': 'September'},
-        {'value': 10, 'name': 'October'},
-        {'value': 11, 'name': 'November'},
-        {'value': 12, 'name': 'December'},
+        {'value': 6, 'name': 'İyun'},
+        {'value': 7, 'name': 'İyul'},
+        {'value': 8, 'name': 'Avqust'},
+        {'value': 9, 'name': 'Sentyabr'},
+        {'value': 10, 'name': 'Oktyabr'},
+        {'value': 11, 'name': 'Noyabr'},
+        {'value': 12, 'name': 'Dekabr'},
     ]
 
     # Get selected year and month from the request or use the current year and month
     selected_year = int(request.GET.get('year', current_year))
     selected_month = int(request.GET.get('month', date.today().month))
+    
+    # Get the device repair costs for the selected year
+    device_labels, monthly_repair_costs = device_monthly_repair_costs(selected_year)
+
+    # Get the repair cost for the selected month
+    selected_month_repair_cost = monthly_repair_costs[selected_month - 1] if selected_month <= len(monthly_repair_costs) else 0
 
     # Calculate the total cost (Product prices * stock_number) for the selected month and year
     total_cost = sum(product.price * product.stock_number for product in Product.objects.filter(date__year=selected_year, date__month=selected_month))
 
     # Calculate the total income (ProductSold prices * count) for the selected month and year
-    total_income = sum(product_sold.price * product_sold.count for product_sold in ProductSold.objects.filter(date__year=selected_year, date__month=selected_month))
+    total_income = sum(product_sold.price * product_sold.count for product_sold in ProductSold.objects.filter(date__year=selected_year, date__month=selected_month)) + selected_month_repair_cost
 
-    # Calculate the total price difference
+    # Calculate the total price difference including repair costs
     total_price_difference = total_income - total_cost
 
     context = {
@@ -850,6 +856,7 @@ def price_comparison_chart(request):
         "total_cost": total_cost,
         "total_income": total_income,
         "total_price_difference": total_price_difference,
+        "selected_month_repair_cost": selected_month_repair_cost,
     }
 
     return context
