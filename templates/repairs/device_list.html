@@ -27,12 +27,14 @@
                 <div class="d-flex">
                     <input type="text" name="q" class="form-control mr-2" placeholder="Search for device name" value="{{ request.GET.q }}">
                     <button class="btn btn-outline-primary" type="submit">Search</button>
-                    <a href="{% url 'device_list' %}" class="btn btn-outline-primary ml-2">Reset</a>
+                    <a href="{% url 'device_list' %}">
+                        <button class="btn btn-outline-secondary ml-1 my-2 my-sm-0" type="button">
+                            Reset
+                        </button>
+                    </a>
                 </div>
             </div>
         </form>
-        
-        
     </div>
     
     {% if grouped_devices %}
