@@ -73,7 +73,14 @@
                 <p><strong>Cost:</strong> <span>${{ device.repair_cost }}</span></p>
                 <p><strong>Duration:</strong> <span>{{ device.repair_duration }} days</span></p>
                 <p><strong>Delivery Date:</strong> <span>{{ device.delivery_date|date:"d/m/Y" }}</span></p>
-                <p><strong>Status:</strong> <span>{{ device.status }}</span></p>
+                <p><strong>Status:</strong> 
+                    <span class="d-inline text-center">
+                        <span class="badge 
+                            {% if device.status == 'Received' %}badge-info{% elif device.status == 'In Progress' %}badge-warning{% elif device.status == 'Completed' %}badge-success{% elif device.status == 'Delivered' %}badge-secondary{% endif %}">
+                            {{ device.status }}
+                        </span>
+                    </span>
+                </p>
                 <p><strong>Notes:</strong> <span>{{ device.notes }}</span></p>
             </div>
             <a href="{% url 'update_device' device.pk %}" class="btn btn-primary btn-full-width">Edit</a>
