@@ -51,13 +51,14 @@
                         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
                     </div>
                     <div class="col-auto">
-                        <a href="{% url 'product_list' %}" class="btn btn-outline-primary my-2 my-sm-0">Reset</a>
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary my-2 my-sm-0">Reset</a>
                     </div>
                 </div>
             </form>
 
             <!-- Product Cards -->
             <div class="row">
+                {% if products %}
                 {% for product in products %}
                 <div class="col-md-4 mb-4">
                     <div class="card {% if product.stock_number < 10 %}low-stock{% endif %}">
@@ -83,6 +84,9 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                    <p>No products found.</p>
+                {% endif %}
             </div>
 
             <!-- Pagination (if needed) -->
