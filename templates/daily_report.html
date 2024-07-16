@@ -1,0 +1,129 @@
+{% extends "index.html" %}
+
+{% block content %}
+<style>
+    .product-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+</style>
+<div class="container my-4">
+    <h1 class="display-4"><strong>Daily Report</strong></h1>
+    
+    <!-- Date Selector -->
+    <div class="my-3">
+        <form method="get" action="" class="form-inline">
+            <div class="form-group">
+                <label for="date" class="mr-2"><strong>Date:</strong></label>
+                <input type="date" name="date" id="date" class="form-control" value="{{ selected_date }}" onchange="this.form.submit()">
+            </div>
+        </form>
+    </div>
+    
+    <!-- Added Devices -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Devices Added on {{ selected_date }}</h5>
+        </div>
+        <div class="card-body">
+            {% if added_devices %}
+                <ul class="list-group">
+                    {% for device in added_devices %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5>{{ forloop.counter }}. <a style="text-decoration: none;" href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
+                            <p><strong>Customer:</strong> {{ device.customer_name }}</p>
+                            <p class="mb-0"><strong>Status:</strong> 
+                                <span class="badge 
+                                    {% if device.status == 'Received' %}badge-info{% elif device.status == 'In Progress' %}badge-warning{% elif device.status == 'Completed' %}badge-success{% elif device.status == 'Delivered' %}badge-secondary{% endif %}">
+                                    {{ device.status }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Edit</a>
+                            <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Are you sure delete this device?')">Delete</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No devices added on this date.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Devices with Delivery Date -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Devices with Delivery Date on {{ selected_date }}</h5>
+        </div>
+        <div class="card-body">
+            {% if delivery_devices %}
+                <ul class="list-group">
+                    {% for device in delivery_devices %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5>{{ forloop.counter }}. <a style="text-decoration: none;" href="{% url 'device_detail' device.pk %}">{{ device.device_name }}</a></h5>
+                            <p><strong>Customer:</strong> {{ device.customer_name }}</p>
+                            <p class="mb-0"><strong>Status:</strong> 
+                                <span class="badge 
+                                    {% if device.status == 'Received' %}badge-info{% elif device.status == 'In Progress' %}badge-warning{% elif device.status == 'Completed' %}badge-success{% elif device.status == 'Delivered' %}badge-secondary{% endif %}">
+                                    {{ device.status }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <a class="btn btn-warning" href="{% url 'update_device' device.pk %}">Edit</a>
+                            <a class="btn btn-danger" href="{% url 'delete_device' device.pk %}" onclick="return confirm('Are you sure delete this device?')">Delete</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No devices with delivery date on this date.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sold Products -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Products Sold on {{ selected_date }}</h5>
+        </div>
+        <div class="card-body">
+            {% if sold_products %}
+                <div class="row">
+                    {% for product in sold_products %}
+                    <div class="col-md-3 mb-4 product-item">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="product-number">
+                                        {{ forloop.counter }}
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title">{{ product.product_name }}</h5>
+                                        <p class="card-text"><strong>Price: </strong>${{ product.price }}</p>
+                                        <p class="card-text"><strong>Count: </strong>
+                                            <a href="{% url 'increase_sold' product.pk %}" class="btn btn-sm btn-success">+</a>
+                                            {{ product.count }}
+                                            <a href="{% url 'decrease_sold' product.pk %}" class="btn btn-sm btn-warning">-</a>
+                                        </p>
+                                        <p class="card-text"><strong>Date: </strong>{{ product.date|date:"d/m/Y" }}</p>
+                                        <a class="btn btn-warning" href="{% url 'update_product_sold' product.pk %}">Edit</a>
+                                        <a class="btn btn-danger" href="{% url 'delete_product_sold' product.pk %}" onclick="return confirm('Bu satılmış məhsulu silmək istədiyinizə əminsiniz?')">Delete</a>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No products sold on this date.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<br><br><br>
+{% endblock %}
