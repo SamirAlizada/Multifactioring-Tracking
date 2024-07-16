@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, FloatField
 from django.db.models.functions import Cast
 from django.http import JsonResponse
-
+from django.utils.timezone import now
 
 #Add
 @login_required
@@ -65,68 +65,6 @@ def load_products(request):
 #------------------------------------------------------------------------------
 
 #Lists
-# @login_required
-# def device_list(request):
-#     today = date.today()
-    
-#     # Retrieve the search query
-#     query = request.GET.get('q')
-    
-#     # Get all devices or filter based on the search query
-#     devices = Device.objects.all()
-#     if query:
-#         devices = devices.filter(device_name__icontains=query)
-    
-#     # Dictionary to group devices by month
-#     grouped_devices_dict = {}
-
-#     # Grouping devices by month key and calculating total repair costs
-#     for device in devices:
-#         # Create month and year key from the registration date
-#         month_key = device.add_date.strftime('%Y-%m')
-#         month_display = device.add_date.strftime('%B %Y')
-
-#         # Group by month key
-#         if month_key not in grouped_devices_dict:
-#             grouped_devices_dict[month_key] = {
-#                 'display': month_display,
-#                 'devices': [],
-#                 'total_repair_cost': 0  # Track total monthly repair costs
-#             }
-
-#         # Add the device to the corresponding month's group
-#         grouped_devices_dict[month_key]['devices'].append(device)
-
-#         # Add the device's repair cost to the total repair cost for the month
-#         grouped_devices_dict[month_key]['total_repair_cost'] += device.repair_cost
-
-#     # Convert dictionary to a list and sort by key in descending order
-#     sorted_grouped_devices_list = sorted(
-#         grouped_devices_dict.items(),
-#         key=lambda x: x[0],
-#         reverse=True
-#     )
-
-#     # Convert sorted list back to dictionary
-#     sorted_grouped_devices_dict = {
-#         item[1]['display']: {
-#             'devices': item[1]['devices'],
-#             'total_repair_cost': item[1]['total_repair_cost']
-#         }
-#         for item in sorted_grouped_devices_list
-#     }
-
-#     # Filter devices whose end_date is within one week from today
-#     devices_near_end_date = devices.filter(
-#         delivery_date__range=(today, today + timedelta(days=7))
-#     ).order_by('delivery_date')  # Sort by delivery_date in ascending order
-
-#     # Pass the data to the template
-#     return render(request, 'repairs/device_list.html', {
-#         'grouped_devices': sorted_grouped_devices_dict,
-#         'today': today,
-#         'devices_near_end_date': devices_near_end_date,
-#     })
 
 # List of month names in Azerbaijani
 months_en = [
@@ -658,88 +596,6 @@ def custom_404(request, exception):
     return render(request, '404.html', status=404)
 #-----------------------------------------------------------------------------
 
-# def sales_chart(request):
-#     # Get all years from the data
-#     years = ProductSold.objects.dates('date', 'year')
-#     years = [year.year for year in years]
-
-#     # Get selected year from the request or use the current year
-#     selected_year = request.GET.get('year', date.today().year)
-
-#     # Get sales data for the selected year, grouped by month
-#     sales_data = (
-#         ProductSold.objects.filter(date__year=selected_year)
-#         .annotate(month=Cast('date__month', FloatField()))
-#         .values('month')
-#         .annotate(total_sales=Sum(F('count') * F('price'), output_field=FloatField()))
-#         .order_by('month')
-#     )
-
-#     # Prepare data for Chart.js
-#     labels = [date(1900, int(entry['month']), 1).strftime('%B') for entry in sales_data]
-#     total_sales = [entry['total_sales'] for entry in sales_data]
-
-#     context = {
-#         "years": years,
-#         "selected_year": int(selected_year),
-#         "labels": labels,
-#         "total_sales": total_sales,
-#     }
-
-#     return render(request, 'chart/sales_chart.html', context)
-
-# def price_comparison_chart(request):
-#     # Get the current year
-#     current_year = date.today().year
-
-#     # Get the earliest year from the Product and ProductSold data
-#     first_product_year = Product.objects.earliest('date').date.year if Product.objects.exists() else current_year
-#     first_product_sold_year = ProductSold.objects.earliest('date').date.year if ProductSold.objects.exists() else current_year
-#     start_year = min(first_product_year, first_product_sold_year)
-
-#     # Get all years from the data starting from the earliest year
-#     years = range(start_year, current_year + 1)
-
-#     months = [
-#         {'value': 1, 'name': 'January'},
-#         {'value': 2, 'name': 'February'},
-#         {'value': 3, 'name': 'March'},
-#         {'value': 4, 'name': 'April'},
-#         {'value': 5, 'name': 'May'},
-#         {'value': 6, 'name': 'June'},
-#         {'value': 7, 'name': 'July'},
-#         {'value': 8, 'name': 'August'},
-#         {'value': 9, 'name': 'September'},
-#         {'value': 10, 'name': 'October'},
-#         {'value': 11, 'name': 'November'},
-#         {'value': 12, 'name': 'December'},
-#     ]
-
-#     # Get selected year and month from the request or use the current year and month
-#     selected_year = int(request.GET.get('year', current_year))
-#     selected_month = int(request.GET.get('month', date.today().month))
-
-#     # Calculate the total cost (Product prices * stock_number) for the selected month and year
-#     total_cost = sum(product.price * product.stock_number for product in Product.objects.filter(date__year=selected_year, date__month=selected_month))
-
-#     # Calculate the total income (ProductSold prices * count) for the selected month and year
-#     total_income = sum(product_sold.price * product_sold.count for product_sold in ProductSold.objects.filter(date__year=selected_year, date__month=selected_month))
-
-#     # Calculate the total price difference
-#     total_price_difference = total_income - total_cost
-
-#     context = {
-#         "years": years,
-#         "months": months,
-#         "selected_year": selected_year,
-#         "selected_month": selected_month,
-#         "total_cost": total_cost,
-#         "total_income": total_income,
-#         "total_price_difference": total_price_difference,
-#     }
-
-#     return render(request, 'chart/price_comparison_chart.html', context)
-
 def device_monthly_repair_costs(selected_year):
     monthly_repair_costs_data = (
         Device.objects.filter(add_date__year=selected_year)
@@ -860,3 +716,26 @@ def combined_charts_view(request):
     }
 
     return render(request, 'chart/combined_charts.html', context)
+
+def daily_report(request):
+    current_date = now().date()
+    selected_date_str = request.GET.get('date', current_date.strftime('%Y-%m-%d'))
+    
+    try:
+        selected_date = datetime.strptime(selected_date_str, '%Y-%m-%d').date()
+    except ValueError:
+        selected_date = current_date
+    
+    added_devices = Device.objects.filter(add_date=selected_date)
+    delivery_devices = Device.objects.filter(delivery_date=selected_date)
+    sold_products = ProductSold.objects.filter(date=selected_date)
+    
+    context = {
+        'current_date': current_date,
+        'selected_date': selected_date,
+        'added_devices': added_devices,
+        'delivery_devices': delivery_devices,
+        'sold_products': sold_products,
+    }
+    
+    return render(request, 'daily_report.html', context)
