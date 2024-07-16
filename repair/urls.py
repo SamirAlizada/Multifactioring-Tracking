@@ -46,7 +46,7 @@ urlpatterns = [
     # path('price-comparison-chart/', price_comparison_chart, name='price_comparison_chart'),
     path('combined-charts-view/', combined_charts_view, name='combined_charts_view'),
 
-
+    path('daily-report/', daily_report, name='daily_report'),
 
     # Account
     path('login/', user_login, name='login'),
