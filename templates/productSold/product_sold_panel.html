@@ -90,7 +90,7 @@
                                         <p class="card-text"><strong>Total: </strong>${{ product_sold.total_price }}</p>
                                         <p class="card-text"><strong>Date: </strong>{{ product_sold.date|date:"d/m/Y" }}</p>
                                         <a class="btn btn-warning" href="{% url 'update_product_sold' product_sold.pk %}">Edit</a>
-                                        <a class="btn btn-danger" href="{% url 'delete_product_sold' product_sold.pk %}" onclick="return confirm('Bu satılmış məhsulu silmək istədiyinizə əminsiniz?')">Delete</a>
+                                        <a class="btn btn-danger" href="{% url 'delete_product_sold' product_sold.pk %}" onclick="return confirm('Do you want to remove this sold item?')">Delete</a>
                                     </div>
                                 </div>
                             </div>
